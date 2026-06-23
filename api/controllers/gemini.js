@@ -9,7 +9,6 @@ async function chatWithAI(req, res) {
         res.json({ answer });
 
     } catch (error) {
-
         res.status(500).json({
             error: error.message,
             message: "AI request failed",
