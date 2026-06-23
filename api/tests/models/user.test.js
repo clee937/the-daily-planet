@@ -1,5 +1,6 @@
 require("../mongodb_helper");
 const User = require("../../models/user");
+const bcrypt = require("bcrypt");
 
 describe("User model", () => {
   beforeEach(async () => {
@@ -40,6 +41,22 @@ describe("User model", () => {
     const users = await User.find();
 
     expect(users[0].email).toEqual("someone@example.com");
-    expect(users[0].password).toEqual("password");
+    expect(users[0].password).not.toEqual("password");
   });
+
+  it("hashes the password before saving", async () => {
+    const user = new User({
+      email: "someone@example.com",
+      password: "password",
+    });
+
+    await user.save();
+  
+    expect(user.password).not.toEqual("password");
+  
+    expect(user.password).toMatch(/^\$2b\$/);
+  
+    const isMatch = await bcrypt.compare("password", user.password);
+    expect(isMatch).toBe(true);
+    });  
 });

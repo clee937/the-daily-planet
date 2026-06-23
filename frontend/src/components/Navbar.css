@@ -1,0 +1,59 @@
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+    background-color: #0a0f1e;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Logo container */
+.navbar-left {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.navbar-logo {
+    height: 60px;
+    width: auto;
+    cursor: pointer;
+    display: block;
+}
+
+/* Centre link container */
+.navbar-centre {
+    display: flex;
+    gap: 2rem;
+}
+
+.navbar-centre .nav-link {
+    text-decoration: none;
+    color: #EBDED0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.navbar-centre .nav-link:hover {
+    opacity: 0.8;
+}
+
+/* Log out container */
+.navbar-right button {
+    background: transparent;
+    border: none;
+    text-decoration: none;
+    color: #EBDED0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.navbar-right button:hover {
+    opacity: 0.8;
+}
