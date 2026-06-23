@@ -20,16 +20,26 @@ vi.mock("../../src/services/authentication", () => {
   return { signup: signupMock };
 });
 
+// Mocking localStorage
+const localStorageMock = {
+  setItem: vi.fn(),
+  getItem: vi.fn(),
+  clear: vi.fn()
+}
+Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+
 // Reusable function for filling out signup form
 async function completeSignupForm() {
   const user = userEvent.setup();
 
   const emailInputEl = screen.getByLabelText("Email:");
   const passwordInputEl = screen.getByLabelText("Password:");
+  const usernameInputEl = screen.getByLabelText("Username:");
   const submitButtonEl = screen.getByRole("submit-button");
 
   await user.type(emailInputEl, "test@email.com");
-  await user.type(passwordInputEl, "1234");
+  await user.type(passwordInputEl, "12345678");
+  await user.type(usernameInputEl, "testuser")
   await user.click(submitButtonEl);
 }
 
@@ -43,16 +53,14 @@ describe("Signup Page", () => {
 
     await completeSignupForm();
 
-    expect(signup).toHaveBeenCalledWith("test@email.com", "1234");
+    expect(signup).toHaveBeenCalledWith("test@email.com", "12345678", "testuser");
   });
 
   test("navigates to /login on successful signup", async () => {
+    signup.mockResolvedValue("secrettoken123");
     render(<SignupPage />);
-
     const navigateMock = useNavigate();
-
     await completeSignupForm();
-
     expect(navigateMock).toHaveBeenCalledWith("/login");
   });
 

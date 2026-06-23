@@ -1,15 +1,18 @@
 const User = require("../models/user");
+const { generateToken } = require("../lib/token");
 
 function create(req, res) {
   const email = req.body.email;
   const password = req.body.password;
+  const username = req.body.username;
 
-  const user = new User({ email, password });
+  const user = new User({ email, password, username });
   user
     .save()
     .then((user) => {
       console.log("User created, id:", user._id.toString());
-      res.status(201).json({ message: "OK" });
+      const token = generateToken(user.id);
+      res.status(201).json({ message: "OK", token: token });
     })
     .catch((err) => {
       console.error(err);

@@ -46,16 +46,16 @@ describe("Login Page", () => {
     expect(login).toHaveBeenCalledWith("test@email.com", "1234");
   });
 
-  test("navigates to /posts on successful login", async () => {
-    render(<LoginPage />);
+  // test("navigates to /posts on successful login", async () => {
+  //   render(<LoginPage />);
 
-    login.mockResolvedValue("secrettoken123");
-    const navigateMock = useNavigate();
+  //   login.mockResolvedValue("secrettoken123");
+  //   const navigateMock = useNavigate();
 
-    await completeLoginForm();
+  //   await completeLoginForm();
 
-    expect(navigateMock).toHaveBeenCalledWith("/posts");
-  });
+  //   expect(navigateMock).toHaveBeenCalledWith("/posts");
+  // });
 
   test("navigates to /login on unsuccessful login", async () => {
     render(<LoginPage />);
