@@ -8,8 +8,7 @@ function create(req, res) {
   user
     .save()
     .then((user) => {
-      console.log("User created, id:", user._id.toString());
-      res.status(201).json({ message: "OK" });
+      res.status(201).json({ message: "OK", userId: user._id});
     })
     .catch((err) => {
       console.error(err);
@@ -20,6 +19,8 @@ function create(req, res) {
 async function update(req, res) {
   try {
     const user = await User.findById(req.params.id);
+    console.log("ID coming from URL:", req.params.id);
+
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -33,7 +34,7 @@ async function update(req, res) {
       user.password = req.body.password;
       // pre('save') hook will hash it
     }
-
+    console.log("ID coming from URL:", req.params.id);
     await user.save();
 
     res.status(200).json({
