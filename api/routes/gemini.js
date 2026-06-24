@@ -5,6 +5,6 @@ const tokenChecker = require("../middleware/tokenChecker");
 
 const router = express.Router();
 
-router.post("/chat", GeminiController.chatWithAI);
+router.post("/chat", tokenChecker, GeminiController.chatWithAI); //add tokenchecker
 
 module.exports = router;
