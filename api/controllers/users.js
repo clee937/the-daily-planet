@@ -23,6 +23,32 @@ function create(req, res) {
     });
 }
 
+async function getUser(req, res) {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    res.status(200).json({
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({
+      message: "Something went wrong"
+    });
+  }
+}
+
 async function update(req, res) {
   try {
     const user = await User.findById(req.params.id);
@@ -78,7 +104,8 @@ async function destroy(req, res) {
 const UsersController = {
   create,
   update,
-  destroy
+  destroy,
+  getUser
 };
 
 module.exports = UsersController;
