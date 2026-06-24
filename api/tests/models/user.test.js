@@ -48,6 +48,7 @@ describe("User model", () => {
     const user = new User({
       email: "someone@example.com",
       password: "password",
+      username: "testuser"
     });
 
     await user.save();

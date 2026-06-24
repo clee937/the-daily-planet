@@ -15,11 +15,13 @@ function create(req, res) {
       res.status(201).json({ message: "OK", token: token });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(400).json({ message: "Something went wrong" });
+      if (err.code === 11000) {
+        res.status(400).json({ message: "Email or username already exists" });
+      } else {
+        res.status(400).json({ message: "Something went wrong" });
+      }
     });
-}
-
+  }
 const UsersController = {
   create: create,
 };

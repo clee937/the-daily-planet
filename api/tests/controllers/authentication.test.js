@@ -5,9 +5,10 @@ const User = require("../../models/user");
 
 describe("/tokens", () => {
   beforeAll(async () => {
+    await User.deleteMany({});
     const user = new User({
       email: "auth-test@test.com",
-      password: "12345678",
+      password: "12345678!",
       username: "testuser",
     });
 
@@ -26,7 +27,7 @@ describe("/tokens", () => {
     const testApp = supertest(app);
     const response = await testApp
       .post("/tokens")
-      .send({ email: "auth-test@test.com", password: "12345678" });
+      .send({ email: "auth-test@test.com", password: "12345678!" });
 
     expect(response.status).toEqual(201);
     expect(response.body.token).not.toEqual(undefined);

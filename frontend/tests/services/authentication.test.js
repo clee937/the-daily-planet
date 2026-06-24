@@ -12,7 +12,7 @@ describe("authentication service", () => {
   describe("login", () => {
     test("calls the backend url for a token", async () => {
       const testEmail = "test@testEmail.com";
-      const testPassword = "12345678";
+      const testPassword = "12345678!";
 
       fetch.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
         status: 201,
@@ -35,7 +35,7 @@ describe("authentication service", () => {
 
     test("returns the token if the request was a success", async () => {
       const testEmail = "test@testEmail.com";
-      const testPassword = "12345678";
+      const testPassword = "12345678!";
 
       fetch.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
         status: 201,
@@ -47,7 +47,7 @@ describe("authentication service", () => {
 
     test("throws an error if the request failed", async () => {
       const testEmail = "test@testEmail.com";
-      const testPassword = "12345678";
+      const testPassword = "12345678!";
 
       fetch.mockResponseOnce(JSON.stringify({ message: "Wrong Password" }), {
         status: 403,
@@ -66,7 +66,7 @@ describe("authentication service", () => {
   describe("signup", () => {
     test("calls the backend url for a token", async () => {
       const testEmail = "test@testEmail.com";
-      const testPassword = "12345678";
+      const testPassword = "12345678!";
       const testUsername = "testuser"
 
       fetch.mockResponseOnce(JSON.stringify({ token: "testToken"}), {
@@ -90,7 +90,7 @@ describe("authentication service", () => {
 
     test("returns a token if the signup request was a success", async () => {
       const testEmail = "test@testEmail.com";
-      const testPassword = "12345678";
+      const testPassword = "12345678!";
       const testUsername = "testuser";
 
       fetch.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
@@ -103,7 +103,7 @@ describe("authentication service", () => {
 
     test("throws an error if the request failed", async () => {
       const testEmail = "test@testEmail.com";
-      const testPassword = "12345678";
+      const testPassword = "12345678!";
       const testUsername = "testuser";
 
       fetch.mockResponseOnce(

@@ -38,7 +38,7 @@ async function completeSignupForm() {
   const submitButtonEl = screen.getByRole("submit-button");
 
   await user.type(emailInputEl, "test@email.com");
-  await user.type(passwordInputEl, "12345678");
+  await user.type(passwordInputEl, "12345678!");
   await user.type(usernameInputEl, "testuser")
   await user.click(submitButtonEl);
 }
@@ -53,7 +53,7 @@ describe("Signup Page", () => {
 
     await completeSignupForm();
 
-    expect(signup).toHaveBeenCalledWith("test@email.com", "12345678", "testuser");
+    expect(signup).toHaveBeenCalledWith("test@email.com", "12345678!", "testuser");
   });
 
   test("navigates to /login on successful signup", async () => {
@@ -72,6 +72,25 @@ describe("Signup Page", () => {
 
     await completeSignupForm();
 
-    expect(navigateMock).toHaveBeenCalledWith("/signup");
+    expect(navigateMock).not.toHaveBeenCalled();
+    expect(screen.getByText("Email or username already exists")).toBeTruthy();
   });
+
+  test("shows an error if password does not contain a special character", async () => {
+    render(<SignupPage />);
+
+    const user = userEvent.setup();
+    const emailInputEl = screen.getByLabelText("Email:");
+    const passwordInputEl = screen.getByLabelText("Password:");
+    const usernameInputEl = screen.getByLabelText("Username:");
+    const submitButtonEl = screen.getByRole("submit-button");
+
+    await user.type(emailInputEl, "test@email.com");
+    await user.type(passwordInputEl, "12345678"); 
+    await user.type(usernameInputEl, "testuser");
+    await user.click(submitButtonEl);
+
+    expect(signup).not.toHaveBeenCalled();
+  });
+
 });

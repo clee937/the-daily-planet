@@ -7,23 +7,29 @@ export function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
     
     if (!email || !password || !username) {
-      alert("All fields are required!");
+      setError("All fields are required!");
       return;
     }
 
     if (!email.includes("@")) {
-      alert("Please enter a valid email!");
+      setError("Please enter a valid email!");
       return;
     }
 
     if (password.length < 8) {
-      alert("password must be at least 8 characters!");
+      setError("Password must be at least 8 characters!");
+      return;
+    }
+
+    if (!/[!@#$%^&*]/.test(password)) {
+      setError("Password must contain at least one special character (! @ # $ % ^ & *)");
       return;
     }
 
@@ -33,7 +39,7 @@ export function SignupPage() {
       navigate("/login");
     } catch (err) {
       console.error(err);
-      navigate("/signup");
+      setError("Email or username already exists");
     }
   }
 
@@ -75,6 +81,7 @@ export function SignupPage() {
           value={password}
           onChange={handlePasswordChange}
         />
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <input role="submit-button" id="submit" type="submit" value="Submit" />
       </form>
     </>

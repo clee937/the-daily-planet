@@ -63,4 +63,32 @@ describe("/users", () => {
       expect(users.length).toEqual(0);
     });
   });
+
+  describe("POST, when email already exists", () => {
+  test("response code is 400", async () => {
+    await request(app)
+      .post("/users")
+      .send({ email: "poppy@email.com", password: "1234", username: "testuser1" });
+
+    const response = await request(app)
+      .post("/users")
+      .send({ email: "poppy@email.com", password: "1234", username: "testuser2" });
+
+    expect(response.statusCode).toBe(400);
+  });
+});
+
+describe("POST, when username already exists", () => {
+  test("response code is 400", async () => {
+    await request(app)
+      .post("/users")
+      .send({ email: "poppy1@email.com", password: "1234", username: "testuser" });
+
+    const response = await request(app)
+      .post("/users")
+      .send({ email: "poppy2@email.com", password: "1234", username: "testuser" });
+
+    expect(response.statusCode).toBe(400);
+  });
+});
 });
