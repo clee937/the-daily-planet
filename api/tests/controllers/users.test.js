@@ -5,12 +5,13 @@ const User = require("../../models/user");
 
 require("../mongodb_helper");
 
+
 describe("/users", () => {
   beforeEach(async () => {
     await User.deleteMany({});
   });
 
-  describe("POST, when email and password are provided", () => {
+  describe("POST, when email, username and password are provided", () => {
     test("the response code is 201", async () => {
       const response = await request(app)
         .post("/users")
@@ -91,4 +92,90 @@ describe("POST, when username already exists", () => {
     expect(response.statusCode).toBe(400);
   });
 });
+
+
+describe("PATCH, when updating user details", () => {
+test("updates user", async () => {
+
+  const user = await User.create({
+    email: "test@test.com",
+    password: "12345678",
+    username: "username"
+  });
+
+  const response = await request(app)
+    .patch(`/users/${user._id}`)  
+    .send({
+      email: "updated@test.com",
+      password: "123456789",
+      username: "username"
+    });
+
+  expect(response.statusCode).toBe(200);
+  expect(response.body.message).toBe("User updated");
 });
+
+test("returns 404 when user does not exist", async () => {
+  const fakeId = "6a3beeb3e63df681f639a999"; // valid format but not in DB
+
+  const response = await request(app)
+    .patch(`/users/${fakeId}`)
+    .send({
+      email: "test@test.com",
+    });
+
+  expect(response.statusCode).toBe(404);
+  expect(response.body.message).toBe("User not found");
+});
+
+test("returns error for invalid user id", async () => {
+  const response = await request(app)
+    .patch("/users/invalid-id")
+    .send({
+      email: "test@test.com",
+    });
+
+  expect(response.statusCode).toBe(400);
+});
+
+test("updates only email field", async () => {
+  const user = await User.create({
+    email: "test@test.com",
+    password: "12345678",
+    username: "username"
+  });
+
+  const response = await request(app)
+    .patch(`/users/${user._id}`)
+    .send({
+      email: "newemail@test.com"
+    });
+
+  expect(response.statusCode).toBe(200);
+
+  const updated = await User.findById(user._id);
+  expect(updated.email).toBe("newemail@test.com");
+});
+
+test("updates password", async () => {
+  const user = await User.create({
+    email: "test@test.com",
+    password: "12345678",
+    username: "username"
+  });
+
+  const oldPassword = user.password;
+
+  await request(app)
+    .patch(`/users/${user._id}`)
+    .send({
+      password: "newpassword123"
+    });
+
+  const updated = await User.findById(user._id);
+
+  expect(updated.password).not.toBe(oldPassword);
+});
+})
+});
+
