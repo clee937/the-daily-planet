@@ -41,11 +41,16 @@ async function update(req, res) {
       user.password = req.body.password;
       // pre('save') hook will hash it
     }
+
+    if (req.body.username) {
+      user.username = req.body.username
+    }
     console.log("ID coming from URL:", req.params.id);
     await user.save();
 
     res.status(200).json({
       message: "User updated",
+      password: res.password
     });
   } catch (err) {
     console.error(err);
