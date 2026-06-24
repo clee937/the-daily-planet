@@ -177,5 +177,75 @@ test("updates password", async () => {
   expect(updated.password).not.toBe(oldPassword);
 });
 })
+
+describe("DELETE a user", () => {
+  test("deletes user", async () => {
+  const user = await User.create({
+    email: "test@test.com",
+    password: "12345678",
+    username: "username"
+  });
+
+  const response = await request(app)
+    .delete(`/users/${user._id}`);
+
+  expect(response.statusCode).toBe(200);
+  expect(response.body.message).toBe("User deleted");
+
+  const deleted = await User.findById(user._id);
+  expect(deleted).toBeNull();
 });
+
+test("returns 404 when user does not exist", async () => {
+  const fakeId = "6a3beeb3e63df681f639a999";
+
+  const response = await request(app)
+    .delete(`/users/${fakeId}`);
+
+  expect(response.statusCode).toBe(404);
+  expect(response.body.message).toBe("User not found");
+});
+
+test("returns 400 for an invalid user id", async () => {
+  const response = await request(app)
+    .delete("/users/not-a-valid-id");
+
+  expect(response.statusCode).toBe(400);
+  expect(response.body.message).toBe("Something went wrong");
+});
+
+test("removes the user from the database", async () => {
+  const user = await User.create({
+    email: "test@test.com",
+    password: "12345678",
+    username: "username"
+  });
+
+  await request(app)
+    .delete(`/users/${user._id}`);
+
+  const deletedUser = await User.findById(user._id);
+
+  expect(deletedUser).toBeNull();
+});
+
+test("returns 404 when deleting the same user twice", async () => {
+  const user = await User.create({
+    email: "test@test.com",
+    password: "12345678",
+    username: "username"
+  });
+
+  await request(app)
+    .delete(`/users/${user._id}`);
+
+  const response = await request(app)
+    .delete(`/users/${user._id}`);
+
+  expect(response.statusCode).toBe(404);
+});
+})
+});
+
+
 

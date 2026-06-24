@@ -26,8 +26,6 @@ function create(req, res) {
 async function update(req, res) {
   try {
     const user = await User.findById(req.params.id);
-    console.log("ID coming from URL:", req.params.id);
-
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -56,9 +54,31 @@ async function update(req, res) {
   }
 }
 
+async function destroy(req, res) {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    console.log("DELETE ID:", req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "User deleted",
+      deletedUser: user
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: "Something went wrong" });
+  }
+}
+
 const UsersController = {
-  create: create,
-  update: update
+  create,
+  update,
+  destroy
 };
 
 module.exports = UsersController;
