@@ -5,20 +5,25 @@ const cors = require("cors");
 const usersRouter = require("./routes/users");
 const authenticationRouter = require("./routes/authentication");
 const tokenChecker = require("./middleware/tokenChecker");
+const astronomyRoutes = require("./routes/astronomy");
 
 const app = express();
 
 // Allow requests from any client
 // docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 // docs: https://expressjs.com/en/resources/middleware/cors.html
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173"
+}));
 
 // Parse JSON request bodies, made available on `req.body`
 app.use(bodyParser.json());
 
 // API Routes
+app.use(express.json())
 app.use("/users", usersRouter);
 app.use("/tokens", authenticationRouter);
+app.use("/api/astronomy", astronomyRoutes);
 
 // 404 Handler
 app.use((_req, res) => {

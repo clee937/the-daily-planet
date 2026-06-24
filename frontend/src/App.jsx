@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import { HomePage } from "./pages/Home/HomePage";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { SignupPage } from "./pages/Signup/SignupPage";
+import AstronomyPage from "./pages/Astronomy/AstronomyPage";
 
 // docs: https://reactrouter.com/en/main/start/overview
 const router = createBrowserRouter([
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignupPage />,
+      },
+      {
+        path: "/astronomy",
+        element: <AstronomyPage />,
       },
     ],
   },
