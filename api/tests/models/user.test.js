@@ -11,6 +11,7 @@ describe("User model", () => {
     const user = new User({
       email: "someone@example.com",
       password: "password",
+      username: "testuser",
     });
     expect(user.email).toEqual("someone@example.com");
   });
@@ -19,6 +20,7 @@ describe("User model", () => {
     const user = new User({
       email: "someone@example.com",
       password: "password",
+      username: "username",
     });
     expect(user.password).toEqual("password");
   });
@@ -32,6 +34,7 @@ describe("User model", () => {
     const user = new User({
       email: "someone@example.com",
       password: "password",
+      username: "username"
     });
 
     await user.save();
@@ -45,16 +48,16 @@ describe("User model", () => {
     const user = new User({
       email: "someone@example.com",
       password: "password",
-  });
+      username: "testuser"
+    });
 
-  await user.save();
-
-  expect(user.password).not.toEqual("password");
-
-  expect(user.password).toMatch(/^\$2b\$/);
-
-  const isMatch = await bcrypt.compare("password", user.password);
-  expect(isMatch).toBe(true);
-});
+    await user.save();
   
+    expect(user.password).not.toEqual("password");
+  
+    expect(user.password).toMatch(/^\$2b\$/);
+  
+    const isMatch = await bcrypt.compare("password", user.password);
+    expect(isMatch).toBe(true);
+    });  
 });

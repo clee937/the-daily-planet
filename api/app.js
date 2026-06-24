@@ -5,6 +5,7 @@ const cors = require("cors");
 const usersRouter = require("./routes/users");
 const authenticationRouter = require("./routes/authentication");
 const tokenChecker = require("./middleware/tokenChecker");
+const apodRouter = require("./routes/apod");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 // API Routes
 app.use("/users", usersRouter);
 app.use("/tokens", authenticationRouter);
+app.use("/apod", apodRouter);
 
 // 404 Handler
 app.use((_req, res) => {
@@ -31,7 +33,7 @@ app.use((err, _req, res, _next) => {
   if (process.env.NODE_ENV === "development") {
     res.status(500).send(err.message);
   } else {
-    res.status(500).json({ err: "Something went wrong" });
+    res.status(500).json({ err: "Houston, we have a problem" });
   }
 });
 
