@@ -1,12 +1,31 @@
-.visible-objects-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    margin-left: 280px;
+.astronomy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
 
-.visible-objects-list li {
-    padding: 0;
-    margin: 0;
-    text-align: left;
+.astronomy-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.astronomy-card:hover {
+    transform: translateY(-5px);
+}
+
+.astronomy-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.card-details {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #666;
 }

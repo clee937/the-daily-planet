@@ -1,8 +1,8 @@
 const axios = require("axios");
 const express = require("express");
-
 const router = express.Router();
 
+// VISIBLE OBJECTS route
 router.get("/visible-objects", async (req, res) => {
     const lat = parseFloat(req.query.lat);
     const lon = parseFloat(req.query.lon);
@@ -10,8 +10,6 @@ router.get("/visible-objects", async (req, res) => {
     try {
         const today = new Date().toISOString().split("T")[0];
         const time = new Date().toTimeString().slice(0, 8);
-        console.log("today:", today);
-        console.log("time:", time);
         const response = await axios.get(
             "https://api.astronomyapi.com/api/v2/bodies/positions",
             {
@@ -30,23 +28,12 @@ router.get("/visible-objects", async (req, res) => {
                 },
             }
         );
-        console.log({
-            latitude: lat,
-            longitude: lon,
-            elevation: 0,
-            from_date: today,
-            to_date: today,
-            time: time,
-            output: "rows",
-        });
-        console.log(JSON.stringify(response.data, null, 2));
 
         const visibleObjects = response.data.data.rows
             .filter((body) => {
                 const altitude = parseFloat(
                     body.positions[0].position.horizontal.altitude.degrees
                 );
-
                 return altitude > 0;
             })
             .filter((body) => body.body.id !== "sun")
@@ -57,9 +44,9 @@ router.get("/visible-objects", async (req, res) => {
                     body.body.id === "moon"
                         ? "Natural Satellite"
                         : "Planet",
-                altitude: parseFloat(body.positions[0].position.horizontal.altitude.degrees)
+                altitude: parseFloat(body.positions[0].position.horizontal.altitude.degrees),
+                azimuth: parseFloat(body.positions[0].position.horizontal.azimuth.degrees)
             }));
-
         res.json(visibleObjects);
 
     } catch (error) {
@@ -68,49 +55,37 @@ router.get("/visible-objects", async (req, res) => {
     }
 });
 
+// STAR CHART route
 router.post("/star-chart", async (req, res) => {
-    const lat = parseFloat(req.query.lat);
-    const lon = parseFloat(req.query.lon);
-
-    if (isNaN(lat) || isNaN(lon)) {
-        return res.status(400).json({ error: "Invalid lat/lon" })
-    }
+    const { constellation } = req.body;
 
     try {
-        console.log("ID:", process.env.ASTRONOMY_ID);
-        console.log("SECRET EXISTS:", !!process.env.ASTRONOMY_SECRET);
-
         const response = await axios({
             method: "POST",
             url: "https://api.astronomyapi.com/api/v2/studio/star-chart",
-            
             auth: {
                 username: process.env.ASTRONOMY_ID,
                 password: process.env.ASTRONOMY_SECRET,
             },
-
             data: {
                 style: "default",
                 observer: {
-                    latitude: lat,
-                    longitude: lon,
+                    latitude: 51.5074,
+                    longitude: -0.1278,
                     date: new Date().toISOString().split("T")[0]
                 },
                 view: {
                     type: "constellation",
                     parameters: {
-                        constellation: "uma",
+                        constellation
                     },
                 },
             },
         });
-
         res.json(response.data);
-    } catch (error) {
-        console.error("FINAL DEBUG:",
-            error.response ? error.response.data : error.message
-        );
 
+    } catch (error) {
+        console.error("FINAL DEBUG:", error.response ? error.response.data : error.message);
         res.status(500).json({
             error: error.message,
             details: error.response?.data
