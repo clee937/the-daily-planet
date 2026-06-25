@@ -5,7 +5,6 @@ import Layout from "./components/Layout";
 import { HomePage } from "./pages/Home/HomePage";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { SignupPage } from "./pages/Signup/SignupPage";
-import { POTDPage } from "./pages/PictureOfTheDay/POTDPage";
 
 // docs: https://reactrouter.com/en/main/start/overview
 const router = createBrowserRouter([
@@ -26,10 +25,6 @@ const router = createBrowserRouter([
         element: <SignupPage />,
       },
     ],
-  },
-  {
-    path: "/picture-of-the-day",
-    element: <POTDPage />,
   },
 ]);
 

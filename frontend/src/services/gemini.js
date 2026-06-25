@@ -9,9 +9,9 @@ export async function sendMessage(prompt, token) {
         },
         body: JSON.stringify({ prompt }),
     });
-    if (response.status !== 200) {
+    if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.prompt || "Something went wrong");
+        throw new Error(data.message || "Something went wrong");
     }
     const data = await response.json();
     return data.answer;
