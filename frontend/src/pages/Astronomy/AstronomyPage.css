@@ -1,0 +1,12 @@
+.visible-objects-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-left: 280px;
+}
+
+.visible-objects-list li {
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}

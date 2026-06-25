@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import "./AstronomyPage.css";
 
 export default function AstronomyPage() {
     const [lat, setLat] = useState(null);
     const [lon, setLon] = useState(null);
     const [locationError, setLocationError] = useState(null);
+    const [visibleObjects, setVisibleObjects] = useState([]);
     const [chart, setChart] = useState(null);
 
     const getCurrentLocation = () => {
@@ -22,6 +25,24 @@ export default function AstronomyPage() {
                 setLocationError(error.message);
             }
         );
+    };
+
+    useEffect(() => {
+        if (lat !== null && lon !== null) {
+            getVisibleObjects(lat, lon);
+        }
+    }, [lat, lon]);
+
+    const getVisibleObjects = async (lat, lon) => {
+        const res = await fetch(
+            `http://localhost:3000/api/astronomy/visible-objects?lat=${lat}&lon=${lon}`
+        );
+
+        const data = await res.json();
+
+        console.log("Visible objects:", data);
+
+        setVisibleObjects(data);
     };
 
     const getAstronomyData = async () => {
@@ -56,30 +77,41 @@ export default function AstronomyPage() {
 
     return(
         <div>
+            <h2>
+                Visible Tonight
+            </h2>
+            <p>
+                Use your current location to discover what`s visible in the night sky right now.
+            </p>
             <button onClick={getCurrentLocation}>
                 Use My Location
             </button>
-            {lat && lon && (
+            <br></br>
+            <br></br>
+
+            {visibleObjects.length > 0 && (
+                <div>
+                    <ul className="visible-objects-list">
+                        {visibleObjects.map((object) => (
+                            <li key={object.name}>
+                                {object.type === "Natural Satellite" ? "🌙" : "🪐"}
+                                {" "}
+                                {object.name}
+                                {": "}
+                                {object.altitude.toFixed(1)}° above the horizon
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+            
+            {lat !== null && lon !== null && (
                 <p>
-                    Latitude: {lat}, Longitude: {lon}
+                    <em>Your location:</em> {`[Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}]`}
                 </p>
             )}
-            {/* <input
-                type="number"
-                step="any"
-                placeholder="Latitude"
-                value={lat}
-                onChange={(event) => setLat(event.target.value)}
-            />
-            <input
-                type="number"
-                step="any"
-                placeholder="Longitude"
-                value={lon}
-                onChange={(event) => setLon(event.target.value)}
-            /> */}
             <button onClick={getAstronomyData}>
-                See My Sky
+                Generate Star Chart
             </button>
 
             {locationError && <p>{locationError}</p>}
