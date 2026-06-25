@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { sendMessage } from "../services/gemini";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Chatbot() {
     const navigate = useNavigate();
     const [prompt, setPrompt] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
 
     async function handleSubmit(event) {
         event.preventDefault();
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/login");
+            setError("You must be logged in to use this feature.")
             return;
         }
 
@@ -29,7 +31,8 @@ export function Chatbot() {
             setMessages((messages) => [...messages, { role: "rover", text: answer }]);
         } catch (err) {
             console.error(err);
-            // navigate("/login");
+            setError(err.message);
+            // setMessages((messages) => [...messages, { role: "rover", text: err.message }]);
         } finally {
             setLoading(false);
         }
@@ -37,6 +40,16 @@ export function Chatbot() {
 
     return (
         <div>
+            {error && (
+                <div>
+                    <p style={{ color: "red" }}>
+                        {error}
+                        {error === "You must be logged in to use this feature." && (
+                            <> <Link to="/signup">Sign up</Link> or <Link to="/login">Log in</Link></>
+                        )}
+                    </p>
+                </div>
+            )}
             <div className="message-list">
                 {messages.map((message, i) => (
                 <div key={i} className={`message ${message.role}`}>
@@ -48,7 +61,10 @@ export function Chatbot() {
             <form onSubmit={handleSubmit}>
                 <input
                     value={prompt}
-                    onChange={(event) => setPrompt(event.target.value)}
+                    onChange={(event) => {
+                        setPrompt(event.target.value);
+                        setError(null);
+                    }}
                     placeholder="Ask Rover about space..."
                 />
                 <button type="submit" disabled={loading}>
@@ -58,3 +74,4 @@ export function Chatbot() {
         </div>
     )
 }
+
