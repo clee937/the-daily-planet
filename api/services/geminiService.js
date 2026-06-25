@@ -61,19 +61,15 @@ async function askGemini(prompt) {
     return "Houston we have a problem, the space station is experiencing high traffic. Please try again!";
 };
 
-module.exports = {
-    askGemini,
+// service to summarise NASA data
+async function generateFact(title, explanation) {
+    const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-lite",
+        contents: `You are a friendly space expert. In 3 sentence or less in simple English, please summarise this: ${title}, ${explanation}`
+    })
+    return response.text();
 };
 
-// service to summarise NASA data
-// async function geminiSummarise(explanation) {
-//     try { 
-//         const response = await ai.models.generateContent({
-//             model: "gemini-2.5-flash-lite",
-//             contents: `You are a friendly space expert. In 3 sentence or less in simple English, please summarise this: ${explanation}`
-//         })
-//         return response.text;
-//     } catch(error) {
-//         console.log(error)
-//     }
-// }
+module.exports = {
+    askGemini, generateFact
+};
