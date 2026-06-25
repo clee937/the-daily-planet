@@ -1,18 +1,44 @@
 import { useState } from "react";
 
 export default function AstronomyPage() {
-    const [lat, setLat] = useState("");
-    const [lon, setLon] = useState("");
+    const [lat, setLat] = useState(null);
+    const [lon, setLon] = useState(null);
+    const [locationError, setLocationError] = useState(null);
     const [chart, setChart] = useState(null);
 
+    const getCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            setLocationError("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setLat(position.coords.latitude);
+                setLon(position.coords.longitude);
+                setLocationError(null);
+            },
+            (error) => {
+                setLocationError(error.message);
+            }
+        );
+    };
+
     const getAstronomyData = async () => {
+        if (lat === null || lon === null) {
+            alert("Please select your location first.");
+            return;
+        }
+
         try {
-            const res = await fetch(`http://localhost:3000/api/astronomy/star-chart?lat=${lat}&lon=${lon}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            const res = await fetch(
+                `http://localhost:3000/api/astronomy/star-chart?lat=${lat}&lon=${lon}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
 
             if (!res.ok) {
                 const errorData = await res.json();
@@ -30,7 +56,15 @@ export default function AstronomyPage() {
 
     return(
         <div>
-            <input
+            <button onClick={getCurrentLocation}>
+                Use My Location
+            </button>
+            {lat && lon && (
+                <p>
+                    Latitude: {lat}, Longitude: {lon}
+                </p>
+            )}
+            {/* <input
                 type="number"
                 step="any"
                 placeholder="Latitude"
@@ -43,10 +77,12 @@ export default function AstronomyPage() {
                 placeholder="Longitude"
                 value={lon}
                 onChange={(event) => setLon(event.target.value)}
-            />
+            /> */}
             <button onClick={getAstronomyData}>
                 See My Sky
             </button>
+
+            {locationError && <p>{locationError}</p>}
 
             {chart && (
                 <div>
