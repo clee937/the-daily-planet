@@ -3,6 +3,7 @@ import { sendMessage } from "../services/gemini";
 import { useNavigate } from "react-router-dom";
 
 export function Chatbot() {
+    const navigate = useNavigate();
     const [prompt, setPrompt] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
