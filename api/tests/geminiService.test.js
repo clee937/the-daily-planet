@@ -3,15 +3,24 @@ const { askGemini } = require("../services/geminiService");
 // Mock the entire @google/genai package instead
 jest.mock("@google/genai", () => {
     const mockSendMessage = jest.fn();
-        return {
-    GoogleGenAI: jest.fn().mockImplementation(() => ({
-        chats: {
-        create: jest.fn().mockReturnValue({
-            sendMessage: mockSendMessage,
-        }),
+    return {
+        GoogleGenAI: jest.fn().mockImplementation(() => ({
+            chats: {
+                create: jest.fn().mockReturnValue({
+                sendMessage: mockSendMessage,
+                }),
+            },
+        })),
+        HarmCategory: {
+            HARM_CATEGORY_HATE_SPEECH: "HARM_CATEGORY_HATE_SPEECH",
+            HARM_CATEGORY_HARASSMENT: "HARM_CATEGORY_HARASSMENT",
+            HARM_CATEGORY_SEXUALLY_EXPLICIT: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            HARM_CATEGORY_DANGEROUS_CONTENT: "HARM_CATEGORY_DANGEROUS_CONTENT",
         },
-    })),
-    mockSendMessage, // expose it so tests can control it
+            HarmBlockThreshold: {
+                BLOCK_LOW_AND_ABOVE: "BLOCK_LOW_AND_ABOVE",
+            },
+        mockSendMessage,
     };
 });
 

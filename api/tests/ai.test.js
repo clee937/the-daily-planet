@@ -3,7 +3,10 @@ const app = require("../app");
 const JWT = require("jsonwebtoken");
 
 jest.mock("../services/geminiService");
+jest.mock("../models/user");
+
 const { askGemini } = require("../services/geminiService");
+const User = require("../models/user");
 
 // Generate a valid token for tests
 const testToken = JWT.sign(
@@ -18,71 +21,98 @@ describe("POST /api/ai/chat", () => {
     });
 
     it("returns an answer when given a question", async () => {
-        // Arrange
+    // Arrange
+        User.findById.mockResolvedValue({
+            aiWindowStart: null,
+            aiMessageCount: 0,
+            save: jest.fn().mockResolvedValue(true)
+        });
+
         askGemini.mockResolvedValue("The sun is very big!");
 
     // Act
-    const response = await request(app)
-        .post("/api/ai/chat")
-        .set("Authorization", `Bearer ${testToken}`)
-        .send({ prompt: "How big is the sun?" });
+        const response = await request(app)
+            .post("/api/ai/chat")
+            .set("Authorization", `Bearer ${testToken}`)
+            .send({ prompt: "How big is the sun?" });
 
     // Assert
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("answer");
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty("answer");
     });
 
     it("returns the answer from Gemini in the response", async () => {
     // Arrange
-    askGemini.mockResolvedValue("The sun is very big!");
+        User.findById.mockResolvedValue({
+            aiWindowStart: null,
+            aiMessageCount: 0,
+            save: jest.fn().mockResolvedValue(true)
+        });
+    
+        askGemini.mockResolvedValue("The sun is very big!");
 
     // Act
-    const response = await request(app)
-        .post("/api/ai/chat")
-        .set("Authorization", `Bearer ${testToken}`)
-        .send({ prompt: "How big is the sun?" });
+        const response = await request(app)
+            .post("/api/ai/chat")
+            .set("Authorization", `Bearer ${testToken}`)
+            .send({ prompt: "How big is the sun?" });
 
     // Assert
-    expect(response.body.answer).toBe("The sun is very big!");
+        expect(response.body.answer).toBe("The sun is very big!");
     });
 
     it("returns a 500 error when Gemini fails", async () => {
     // Arrange
-    askGemini.mockRejectedValue(new Error("Gemini API error"));
+        User.findById.mockResolvedValue({
+            aiWindowStart: null,
+            aiMessageCount: 0,
+            save: jest.fn().mockResolvedValue(true)
+        });
+        askGemini.mockRejectedValue(new Error("Gemini API error"));
 
     // Act
-    const response = await request(app)
-        .post("/api/ai/chat")
-        .set("Authorization", `Bearer ${testToken}`)
-        .send({ prompt: "How big is the sun?" });
+        const response = await request(app)
+            .post("/api/ai/chat")
+            .set("Authorization", `Bearer ${testToken}`)
+            .send({ prompt: "How big is the sun?" });
 
     // Assert
-    expect(response.status).toBe(500);
-    expect(response.body).toHaveProperty("message");
+        expect(response.status).toBe(500);
+        expect(response.body).toHaveProperty("message");
     });
 
     it("calls Gemini with the prompt from the request", async () => {
     // Arrange
-    askGemini.mockResolvedValue("Some answer");
+        User.findById.mockResolvedValue({
+            aiWindowStart: null,
+            aiMessageCount: 0,
+            save: jest.fn().mockResolvedValue(true)
+        });
+        askGemini.mockResolvedValue("Some answer");
 
     // Act
-    await request(app)
-        .post("/api/ai/chat")
-        .set("Authorization", `Bearer ${testToken}`)
-        .send({ prompt: "How big is the sun?" });
+        await request(app)
+            .post("/api/ai/chat")
+            .set("Authorization", `Bearer ${testToken}`)
+            .send({ prompt: "How big is the sun?" });
 
     // Assert
-    expect(askGemini).toHaveBeenCalledWith("How big is the sun?");
+        expect(askGemini).toHaveBeenCalledWith("How big is the sun?");
     });
 
     it("returns 401 when no token is provided", async () => {
     // Act - no token this time
-    const response = await request(app)
-        .post("/api/ai/chat")
-        .send({ prompt: "How big is the sun?" });
+        User.findById.mockResolvedValue({
+            aiWindowStart: null,
+            aiMessageCount: 0,
+            save: jest.fn().mockResolvedValue(true)
+        });
+
+        const response = await request(app)
+            .post("/api/ai/chat")
+            .send({ prompt: "How big is the sun?" });
 
     // Assert
-    expect(response.status).toBe(401);
+        expect(response.status).toBe(401);
     });
-
 });
