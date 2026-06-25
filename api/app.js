@@ -6,6 +6,7 @@ const usersRouter = require("./routes/users");
 const authenticationRouter = require("./routes/authentication");
 const tokenChecker = require("./middleware/tokenChecker");
 const apodRouter = require("./routes/apod");
+const favouritesRouter = require("./routes/favourites");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 app.use("/users", usersRouter);
 app.use("/tokens", authenticationRouter);
 app.use("/apod", apodRouter);
+app.use("/favourites", tokenChecker, favouritesRouter);
 
 // 404 Handler
 app.use((_req, res) => {
