@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import "./AstronomyPage.css";
 
 export default function AstronomyPage() {
+    const [locationError, setLocationError] = useState(null);
     const [lat, setLat] = useState(null);
     const [lon, setLon] = useState(null);
-    const [locationError, setLocationError] = useState(null);
-    const [visibleObjects, setVisibleObjects] = useState([]);
-    const [constellation, setConstellation] = useState("uma");
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
     const [chart, setChart] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [visibleObjects, setVisibleObjects] = useState([]);
+    const [constellation, setConstellation] = useState("uma");
 
     // Function to find user's CURRENT LOCATION:
     const getCurrentLocation = () => {
@@ -43,7 +44,7 @@ export default function AstronomyPage() {
 
     // Function to call VISIBLE OBJECTS route:
     const getVisibleObjects = async (lat, lon) => {
-        const response = await fetch(`http://localhost:3000/api/astronomy/visible-objects?lat=${lat}&lon=${lon}`);
+        const response = await fetch(`http://localhost:3000/api/astronomy/visible-objects?lat=${lat}&lon=${lon}&date=${selectedDate}`);
         const data = await response.json();
         setVisibleObjects(data);
     };
@@ -52,8 +53,8 @@ export default function AstronomyPage() {
     const getAstronomyData = async () => {
 
         try {
-            setLoading(true);
             setChart(null);
+            setLoading(true);
             const response = await fetch(
                 `http://localhost:3000/api/astronomy/star-chart`,
                 {
@@ -83,8 +84,13 @@ export default function AstronomyPage() {
     return(
         <div>
             {/* VISIBLE OBJECTS */}
-            <h2>🌙 Visible Tonight</h2>
-            <p>Use your current location to discover what`s visible in the night sky right now.</p>
+            <h2>🌙 What`s in the Sky?</h2>
+            <p>Use your current location to discover what`s visible in the night sky on a day of your choosing.</p>
+            <input
+                type="date"
+                value={selectedDate}
+                onChange={(event) => setSelectedDate(event.target.value)}
+            />
             <button onClick={getCurrentLocation}>Use My Location</button>
             <br></br>
             <br></br>
@@ -142,6 +148,8 @@ export default function AstronomyPage() {
                     <img src={chart} alt="Astronomy star chart" />
                 </div>
             )}
+            <br></br>
+            <br></br>
         </div>
     );
 }

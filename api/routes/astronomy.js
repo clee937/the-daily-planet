@@ -6,10 +6,9 @@ const router = express.Router();
 router.get("/visible-objects", async (req, res) => {
     const lat = parseFloat(req.query.lat);
     const lon = parseFloat(req.query.lon);
+    const date = req.query.date;
 
     try {
-        const today = new Date().toISOString().split("T")[0];
-        const time = new Date().toTimeString().slice(0, 8);
         const response = await axios.get(
             "https://api.astronomyapi.com/api/v2/bodies/positions",
             {
@@ -21,9 +20,9 @@ router.get("/visible-objects", async (req, res) => {
                     latitude: lat,
                     longitude: lon,
                     elevation: 0,
-                    from_date: today,
-                    to_date: today,
-                    time: time,
+                    from_date: date,
+                    to_date: date,
+                    time: "22:00:00",
                     output: "rows",
                 },
             }
