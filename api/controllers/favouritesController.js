@@ -1,4 +1,4 @@
-const Favourite = require ("../models/favourites");
+const Favourite = require ("../models/Favourite");
 
 function getUserId(req) {
     return req.user_id;
