@@ -1,5 +1,5 @@
 const Apod = require("../models/Apod");
-const { generateFact } = require("./geminiService");
+const { generateFact } = require("./geminiServiceMin");
 
 const APOD_URL = "https://api.nasa.gov/planetary/apod";
 
