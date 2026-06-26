@@ -38,7 +38,7 @@ describe("/tokens", () => {
     const testApp = supertest(app);
     const response = await testApp
       .post("/tokens")
-      .send({ email: "non-existent@test.com", password: "1234" });
+      .send({ email: "non-existent@test.com", password: "12345678!" });
 
     expect(response.status).toEqual(401);
     expect(response.body.token).toEqual(undefined);

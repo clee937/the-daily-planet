@@ -17,13 +17,13 @@ export async function login(email, password) {
 
   const response = await fetch(`${BACKEND_URL}/tokens`, requestOptions);
 
-  // docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/201
-  if (response.status === 201) {
+  // docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
+  if (response.status === 200) {
     let data = await response.json();
     return data.token;
   } else {
     throw new Error(
-      `Received status ${response.status} when logging in. Expected 201`
+      `Received status ${response.status} when logging in. Expected 200`
     );
   }
 }

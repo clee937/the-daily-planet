@@ -93,4 +93,50 @@ describe("Signup Page", () => {
     expect(signup).not.toHaveBeenCalled();
   });
 
+  test("shows error when fields are empty", async () => {
+  render(<SignupPage />);
+
+  const user = userEvent.setup();
+  const submitButtonEl = screen.getByRole("submit-button");
+  await user.click(submitButtonEl);
+
+  expect(screen.getByText("All fields are required!")).toBeTruthy();
+  expect(signup).not.toHaveBeenCalled();
+});
+
+test("shows error when email is invalid", async () => {
+  render(<SignupPage />);
+
+  const user = userEvent.setup();
+  const emailInputEl = screen.getByLabelText("Email:");
+  const passwordInputEl = screen.getByLabelText("Password:");
+  const usernameInputEl = screen.getByLabelText("Username:");
+  const submitButtonEl = screen.getByRole("submit-button");
+
+  await user.type(emailInputEl, "notanemail");
+  await user.type(passwordInputEl, "12345678!");
+  await user.type(usernameInputEl, "testuser");
+  await user.click(submitButtonEl);
+
+  expect(screen.getByText("Please enter a valid email!")).toBeTruthy();
+  expect(signup).not.toHaveBeenCalled();
+});
+
+test("shows error when password is too short", async () => {
+  render(<SignupPage />);
+
+  const user = userEvent.setup();
+  const emailInputEl = screen.getByLabelText("Email:");
+  const passwordInputEl = screen.getByLabelText("Password:");
+  const usernameInputEl = screen.getByLabelText("Username:");
+  const submitButtonEl = screen.getByRole("submit-button");
+
+  await user.type(emailInputEl, "test@email.com");
+  await user.type(passwordInputEl, "123!");
+  await user.type(usernameInputEl, "testuser");
+  await user.click(submitButtonEl);
+
+  expect(screen.getByText("Password must be at least 8 characters!")).toBeTruthy();
+  expect(signup).not.toHaveBeenCalled();
+});
 });
