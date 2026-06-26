@@ -136,7 +136,7 @@ export default function AstronomyPage() {
             {/* VISIBLE OBJECTS */}
             <h2>✨ What`s in the Sky Tonight?</h2>
             <p className="superman"><em>`Is it a bird? Is it a plane?`</em></p>
-            <p>Use your current location to discover what`s visible in the sky tonight.</p>
+            <p>Use your current location to discover what`s visible in your sky tonight.</p>
             <p>🔭 <em>Visible objects calculated for 22:00 local time.</em></p>
             <input
                 type="date"
@@ -199,6 +199,7 @@ export default function AstronomyPage() {
             {/* STAR CHART */}
             <h2>🌌 Constellation Explorer</h2>
             <p>Choose a constellation from the options below to view it`s star chart.</p>
+            <p>🔭 <em>Star charts are generated from a fixed observation point in London, UK.</em></p>
             <select
                 value={constellation}
                 onChange={(event) => setConstellation(event.target.value)}
@@ -229,6 +230,7 @@ export default function AstronomyPage() {
             )}
             <br></br>
             <br></br>
+            <p>🔭 <em>Data provided by AstronomyAPI.</em></p>
         </div>
     );
 }
