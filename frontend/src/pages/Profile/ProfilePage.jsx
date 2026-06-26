@@ -20,7 +20,7 @@ export function ProfilePage() {
         getUser(token)
         .then((data) => setUser(data.user))
         .catch((err) => console.error(err));
-    }, []);
+    },[navigate, token]);
 
     async function handleEdit(event) {
     event.preventDefault();
@@ -44,7 +44,7 @@ export function ProfilePage() {
         try {
         await deleteUser(token);
         localStorage.removeItem("token");
-        navigate("/signup");
+        navigate("/");
         } catch (err) {
         setMessage("Could not delete account. Please try again.");
         console.error(err);
