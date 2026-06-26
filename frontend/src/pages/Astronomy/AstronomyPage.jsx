@@ -10,6 +10,7 @@ export default function AstronomyPage() {
     const [loading, setLoading] = useState(false);
     const [visibleObjects, setVisibleObjects] = useState([]);
     const [constellation, setConstellation] = useState("uma");
+    const [moonImage, setMoonImage] = useState(null);
 
     // Function to find user's CURRENT LOCATION:
     const getCurrentLocation = () => {
@@ -49,20 +50,51 @@ export default function AstronomyPage() {
         setVisibleObjects(data);
     };
 
-    // Function to call STAR CHART route:
-    const getAstronomyData = async () => {
-
+    // Function to call MOON PHASE route:
+    const getMoonPhase = async () => {
         try {
-            setChart(null);
-            setLoading(true);
             const response = await fetch(
-                `http://localhost:3000/api/astronomy/star-chart`,
+                "http://localhost:3000/api/astronomy/moon-phase",
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({constellation})
+                    body: JSON.stringify({
+                        date: selectedDate,
+                        latitude: lat,
+                        longitude: lon
+                    })
+                }
+            );
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data);
+                return;
+            }
+
+            console.log(data);
+            setMoonImage(data.data.imageUrl);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
+    // Function to call STAR CHART route:
+    const getAstronomyData = async () => {
+        try {
+            setChart(null);
+            setLoading(true);
+            const response = await fetch(
+                "http://localhost:3000/api/astronomy/star-chart",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ constellation })
                 });
 
             if (!response.ok) {
@@ -74,6 +106,7 @@ export default function AstronomyPage() {
             const data = await response.json();
             console.log("Success:", data);
             setChart(data.data.imageUrl);
+
         } catch (err) {
             console.error("Fetch Error:", err);
         } finally {
@@ -84,7 +117,8 @@ export default function AstronomyPage() {
     return(
         <div>
             {/* VISIBLE OBJECTS */}
-            <h2>🌙 What`s in the Sky?</h2>
+            <h2>✨ What`s in the Sky?</h2>
+            <p className="superman"><em>`Is it a bird? Is it a plane?`</em></p>
             <p>Use your current location to discover what`s visible in the night sky on a day of your choosing.</p>
             <input
                 type="date"
@@ -95,7 +129,7 @@ export default function AstronomyPage() {
             <br></br>
             <br></br>
             {lat !== null && lon !== null && (
-                <p><em>Your location:</em> {`[Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}]`}</p>
+                <p>🔭 <em>Your location:</em> {`[Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}]`}</p>
             )}
             {locationError && <p>{locationError}</p>}
             {visibleObjects.length > 0 && (
@@ -124,8 +158,28 @@ export default function AstronomyPage() {
                 </div>
             )}
 
+            {/* MOON PHASE */}
+            <h2>🌒 Explore the Phases of the Moon</h2>
+            <p>Choose a day and click enter to see what the moon will look like on that day.</p>
+            <input
+                type="date"
+                value={selectedDate}
+                onChange={(event) => setSelectedDate(event.target.value)}
+            />
+            <button onClick={getMoonPhase} disabled={loading}>{loading ? "Fetching..." : "Explore Moon Phase"}</button>
+            {loading && (
+                <p>🛰️ Fetching moon phase, please standby...</p>
+            )}
+            <br></br>
+            <br></br>
+            {moonImage && (
+                <div>
+                    <img src={moonImage} alt="Moon phase" />
+                </div>
+            )}
+
             {/* STAR CHART */}
-            <h2>✨ Browse Star Charts</h2>
+            <h2>🌌 Browse Star Charts</h2>
             <p>Choose a constellation from the options below to view it`s star chart.</p>
             <select
                 value={constellation}
@@ -139,7 +193,7 @@ export default function AstronomyPage() {
             </select>
             <button onClick={getAstronomyData} disabled={loading}>{loading ? "Generating..." : "Generate Star Chart"}</button>
             {loading && (
-                <p>🌌 Generating star chart, please standby...</p>
+                <p>🛰️ Generating star chart, please standby...</p>
             )}
             <br></br>
             <br></br>

@@ -8,7 +8,7 @@
 
 .astronomy-card {
     background: white;
-    border: 1px solid grey;
+    border: 1px solid darkgrey;
     padding: 20px;
 }
 
@@ -22,4 +22,9 @@
     margin: 5px 0;
     font-size: 1rem;
     color: black;
+}
+
+.superman {
+    font-size: 0.75rem;
+    color: darkgrey;
 }
