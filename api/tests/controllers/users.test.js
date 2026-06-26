@@ -15,7 +15,7 @@ describe("/users", () => {
     test("the response code is 201", async () => {
       const response = await request(app)
         .post("/users")
-        .send({ email: "poppy@email.com", password: "1234", username: "testuser" });
+        .send({ email: "poppy@email.com", password: "12345678!", username: "testuser" });
 
       expect(response.statusCode).toBe(201);
     });
@@ -23,7 +23,7 @@ describe("/users", () => {
     test("a user is created", async () => {
       await request(app)
         .post("/users")
-        .send({ email: "scarconstt@email.com", password: "1234", username: "testuser" });
+        .send({ email: "scarconstt@email.com", password: "12345678!", username: "testuser" });
 
       const users = await User.find();
       const newUser = users[users.length - 1];
@@ -52,13 +52,13 @@ describe("/users", () => {
     test("response code is 400", async () => {
       const response = await request(app)
         .post("/users")
-        .send({ password: "1234" });
+        .send({ password: "12345678!" });
 
       expect(response.statusCode).toBe(400);
     });
 
     test("does not create a user", async () => {
-      await request(app).post("/users").send({ password: "1234" });
+      await request(app).post("/users").send({ password: "12345678!" });
 
       const users = await User.find();
       expect(users.length).toEqual(0);
@@ -69,11 +69,11 @@ describe("/users", () => {
   test("response code is 400", async () => {
     await request(app)
       .post("/users")
-      .send({ email: "poppy@email.com", password: "1234", username: "testuser1" });
+      .send({ email: "poppy@email.com", password: "12345678!", username: "testuser1" });
 
     const response = await request(app)
       .post("/users")
-      .send({ email: "poppy@email.com", password: "1234", username: "testuser2" });
+      .send({ email: "poppy@email.com", password: "12345678!", username: "testuser2" });
 
     expect(response.statusCode).toBe(400);
   });
@@ -83,11 +83,11 @@ describe("POST, when username already exists", () => {
   test("response code is 400", async () => {
     await request(app)
       .post("/users")
-      .send({ email: "poppy1@email.com", password: "1234", username: "testuser" });
+      .send({ email: "poppy1@email.com", password: "12345678!", username: "testuser" });
 
     const response = await request(app)
       .post("/users")
-      .send({ email: "poppy2@email.com", password: "1234", username: "testuser" });
+      .send({ email: "poppy2@email.com", password: "12345678!", username: "testuser" });
 
     expect(response.statusCode).toBe(400);
   });
@@ -99,7 +99,7 @@ test("updates user", async () => {
 
   const user = await User.create({
     email: "test@test.com",
-    password: "12345678",
+    password: "12345678!",
     username: "username"
   });
 
@@ -107,11 +107,11 @@ test("updates user", async () => {
     .patch(`/users/${user._id}`)  
     .send({
       email: "updated@test.com",
-      password: "123456789",
+      password: "12345678!",
       username: "username"
     });
 
-  expect(response.statusCode).toBe(200);
+  expect(response.statusCode).toBe(201);
   expect(response.body.message).toBe("User updated");
 });
 
@@ -141,7 +141,7 @@ test("returns error for invalid user id", async () => {
 test("updates only email field", async () => {
   const user = await User.create({
     email: "test@test.com",
-    password: "12345678",
+    password: "12345678!",
     username: "username"
   });
 
@@ -151,7 +151,7 @@ test("updates only email field", async () => {
       email: "newemail@test.com"
     });
 
-  expect(response.statusCode).toBe(200);
+  expect(response.statusCode).toBe(201);
 
   const updated = await User.findById(user._id);
   expect(updated.email).toBe("newemail@test.com");
@@ -160,7 +160,7 @@ test("updates only email field", async () => {
 test("updates password", async () => {
   const user = await User.create({
     email: "test@test.com",
-    password: "12345678",
+    password: "12345678!",
     username: "username"
   });
 
@@ -182,14 +182,14 @@ describe("DELETE a user", () => {
   test("deletes user", async () => {
   const user = await User.create({
     email: "test@test.com",
-    password: "12345678",
+    password: "12345678!",
     username: "username"
   });
 
   const response = await request(app)
     .delete(`/users/${user._id}`);
 
-  expect(response.statusCode).toBe(200);
+  expect(response.statusCode).toBe(201);
   expect(response.body.message).toBe("User deleted");
 
   const deleted = await User.findById(user._id);
@@ -217,7 +217,7 @@ test("returns 400 for an invalid user id", async () => {
 test("removes the user from the database", async () => {
   const user = await User.create({
     email: "test@test.com",
-    password: "12345678",
+    password: "12345678!",
     username: "username"
   });
 
@@ -232,7 +232,7 @@ test("removes the user from the database", async () => {
 test("returns 404 when deleting the same user twice", async () => {
   const user = await User.create({
     email: "test@test.com",
-    password: "12345678",
+    password: "12345678!",
     username: "username"
   });
 
@@ -250,14 +250,14 @@ describe("GET /users/:id", () => {
   test("returns a user", async () => {
     const user = await User.create({
       email: "test@test.com",
-      password: "12345678",
+      password: "12345678!",
       username: "username"
     });
 
     const response = await request(app)
       .get(`/users/${user._id}`);
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(201);
 
     expect(response.body.user.email).toBe("test@test.com");
     expect(response.body.user.username).toBe("username");
@@ -284,7 +284,7 @@ test("returns 400 for an invalid id", async () => {
 test("does not return the password", async () => {
   const user = await User.create({
     email: "test@test.com",
-    password: "12345678",
+    password: "12345678!",
     username: "username"
   });
 

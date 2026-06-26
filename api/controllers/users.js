@@ -6,6 +6,18 @@ function create(req, res) {
   const password = req.body.password;
   const username = req.body.username;
 
+  if (!email || !password || !username) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters" });
+  }
+
+  if (!/[!@#$%^&*]/.test(password)) {
+    return res.status(400).json({ message: "Password must contain at least one special character" });
+  }
+
   const user = new User({ email, password, username });
   user
     .save()
@@ -33,7 +45,7 @@ async function getUser(req, res) {
       });
     }
 
-    res.status(200).json({
+    res.status(201).json({
       user: {
         id: user._id,
         email: user.email,
@@ -70,7 +82,7 @@ async function update(req, res) {
     }
     await user.save();
 
-    res.status(200).json({
+    res.status(201).json({
       message: "User updated",
       password: res.password
     });
@@ -90,7 +102,7 @@ async function destroy(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({
+    res.status(201).json({
       message: "User deleted",
       deletedUser: user
     });
