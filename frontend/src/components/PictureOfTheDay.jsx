@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import FavouriteButton from "./FavouriteButton";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-function PictureOfTheDay() {
+function PictureOfTheDay({token}) {
     const [apod, setApod] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,6 +48,19 @@ function PictureOfTheDay() {
 
         <p className="apod-explanation">{apod.explanation}</p>
         {apod.copyright && <p className="apod-credit">© {apod.copyright}</p>}
+
+            <FavouriteButton
+            picture={{
+                title:apod.title,
+                url:apod.url,
+                explanation:apod.explanation,
+                date:apod.date,
+                source:"apod",
+                mediaType:apod.mediaType,
+                sourceId:apod.date,
+            }}
+            token={token}
+        />
     </section>
     );
 }
