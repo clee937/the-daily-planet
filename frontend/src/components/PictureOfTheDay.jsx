@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import FavouriteButton from "./FavouriteButton";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 function PictureOfTheDay({token}) {
     const [apod, setApod] = useState(null);
