@@ -5,7 +5,9 @@ const cors = require("cors");
 const usersRouter = require("./routes/users");
 const authenticationRouter = require("./routes/authentication");
 const tokenChecker = require("./middleware/tokenChecker");
+const geminiRouter = require("./routes/gemini");
 const apodRouter = require("./routes/apod");
+const issRouter = require("./routes/iss");
 
 const app = express();
 
@@ -20,7 +22,9 @@ app.use(bodyParser.json());
 // API Routes
 app.use("/users", usersRouter);
 app.use("/tokens", authenticationRouter);
+app.use("/api/ai", geminiRouter);
 app.use("/apod", apodRouter);
+app.use("/iss", issRouter);
 
 // 404 Handler
 app.use((_req, res) => {

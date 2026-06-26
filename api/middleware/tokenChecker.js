@@ -22,7 +22,7 @@ function tokenChecker(req, res, next) {
     next();
   } catch (err) {
     console.log(err);
-    res.status(401).json({ message: "auth error" });
+    res.status(401).json({ message: "You must be logged in to use this feature." });
   }
 }
 
