@@ -37,4 +37,15 @@ describe("Home Page", () => {
     const loginLink = screen.getByText("Log In");
     expect(loginLink.getAttribute("href")).toEqual("/login");
   });
+
+  test("Renders the chatbot", async () => {
+    render(
+      <BrowserRouter>
+        <HomePage />
+      </BrowserRouter>
+    );
+
+      expect(screen.getByPlaceholderText("Ask Rover about space...")).toBeTruthy();
+      expect(screen.getByRole("button", { name: /send/i })).toBeTruthy();
+  });
 });

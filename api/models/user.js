@@ -5,6 +5,8 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, },
   username: { type: String, required: true, unique: true },
+  aiMessageCount: { type: Number, default: 0 },
+  aiWindowStart: { type: Date, default: null },
 });
 
 UserSchema.pre("save", async function(next) {
