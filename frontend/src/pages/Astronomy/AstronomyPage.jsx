@@ -5,12 +5,14 @@ export default function AstronomyPage() {
     const [locationError, setLocationError] = useState(null);
     const [lat, setLat] = useState(null);
     const [lon, setLon] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
-    const [chart, setChart] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [visibleObjectsDate, setVisibleObjectsDate] = useState(new Date().toISOString().split("T")[0]);
     const [visibleObjects, setVisibleObjects] = useState([]);
-    const [constellation, setConstellation] = useState("uma");
+    const [moonLoading, setMoonLoading] = useState(false);
     const [moonImage, setMoonImage] = useState(null);
+    const [chart, setChart] = useState(null);
+    const [chartLoading, setChartLoading] = useState(false);
+    const [moonDate, setMoonDate] = useState(new Date().toISOString().split("T")[0]);
+    const [constellation, setConstellation] = useState("uma");
 
     // Function to find user's CURRENT LOCATION:
     const getCurrentLocation = () => {
@@ -32,10 +34,14 @@ export default function AstronomyPage() {
     };
 
     useEffect(() => {
+        getCurrentLocation();
+    }, []);
+
+    useEffect(() => {
         if (lat !== null && lon !== null) {
             getVisibleObjects(lat, lon);
         }
-    }, [lat, lon]);
+    }, [lat, lon, visibleObjectsDate]);
 
     // Function to calculate DIRECTION of visible objects:
     const getDirection = (azimuth) => {
@@ -45,14 +51,26 @@ export default function AstronomyPage() {
 
     // Function to call VISIBLE OBJECTS route:
     const getVisibleObjects = async (lat, lon) => {
-        const response = await fetch(`http://localhost:3000/api/astronomy/visible-objects?lat=${lat}&lon=${lon}&date=${selectedDate}`);
+        const response = await fetch(`http://localhost:3000/api/astronomy/visible-objects?lat=${lat}&lon=${lon}&date=${visibleObjectsDate}`);
+        
+        if (!response.ok) {
+            console.error("Failed to fetch visible objects");
+            return;
+        }
+
         const data = await response.json();
         setVisibleObjects(data);
     };
 
     // Function to call MOON PHASE route:
     const getMoonPhase = async () => {
+        if (lat === null || lon === null) {
+            alert("Location is required.");
+            return;
+        }
+
         try {
+            setMoonLoading(true);
             const response = await fetch(
                 "http://localhost:3000/api/astronomy/moon-phase",
                 {
@@ -61,7 +79,7 @@ export default function AstronomyPage() {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        date: selectedDate,
+                        date: moonDate,
                         latitude: lat,
                         longitude: lon
                     })
@@ -74,19 +92,19 @@ export default function AstronomyPage() {
                 return;
             }
 
-            console.log(data);
             setMoonImage(data.data.imageUrl);
         } catch (err) {
             console.error(err);
+        } finally {
+            setMoonLoading(false);
         }
     };
 
-
     // Function to call STAR CHART route:
-    const getAstronomyData = async () => {
+    const getStarChart = async () => {
         try {
             setChart(null);
-            setLoading(true);
+            setChartLoading(true);
             const response = await fetch(
                 "http://localhost:3000/api/astronomy/star-chart",
                 {
@@ -104,32 +122,32 @@ export default function AstronomyPage() {
             }
 
             const data = await response.json();
-            console.log("Success:", data);
             setChart(data.data.imageUrl);
 
         } catch (err) {
             console.error("Fetch Error:", err);
         } finally {
-            setLoading(false);
+            setChartLoading(false);
         }
     };
 
     return(
         <div>
             {/* VISIBLE OBJECTS */}
-            <h2>✨ What`s in the Sky?</h2>
+            <h2>✨ What`s in the Sky Tonight?</h2>
             <p className="superman"><em>`Is it a bird? Is it a plane?`</em></p>
-            <p>Use your current location to discover what`s visible in the night sky on a day of your choosing.</p>
+            <p>Use your current location to discover what`s visible in the sky tonight.</p>
+            <p>🔭 <em>Visible objects calculated for 22:00 local time.</em></p>
             <input
                 type="date"
-                value={selectedDate}
-                onChange={(event) => setSelectedDate(event.target.value)}
+                value={visibleObjectsDate}
+                onChange={(event) => setVisibleObjectsDate(event.target.value)}
             />
-            <button onClick={getCurrentLocation}>Use My Location</button>
             <br></br>
             <br></br>
+            <button onClick={getCurrentLocation}>Refresh Location</button>
             {lat !== null && lon !== null && (
-                <p>🔭 <em>Your location:</em> {`[Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}]`}</p>
+                <p>📍 <em>Current location:</em> {`[Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}]`}</p>
             )}
             {locationError && <p>{locationError}</p>}
             {visibleObjects.length > 0 && (
@@ -159,15 +177,15 @@ export default function AstronomyPage() {
             )}
 
             {/* MOON PHASE */}
-            <h2>🌒 Explore the Phases of the Moon</h2>
-            <p>Choose a day and click enter to see what the moon will look like on that day.</p>
+            <h2>🌒 Moon Phase Explorer</h2>
+            <p>Use your current location to see what phase the moon will be in on a day of your choice.</p>
             <input
                 type="date"
-                value={selectedDate}
-                onChange={(event) => setSelectedDate(event.target.value)}
+                value={moonDate}
+                onChange={(event) => setMoonDate(event.target.value)}
             />
-            <button onClick={getMoonPhase} disabled={loading}>{loading ? "Fetching..." : "Explore Moon Phase"}</button>
-            {loading && (
+            <button onClick={getMoonPhase} disabled={moonLoading}>{moonLoading ? "Fetching..." : "Explore Moon Phase"}</button>
+            {moonLoading && (
                 <p>🛰️ Fetching moon phase, please standby...</p>
             )}
             <br></br>
@@ -179,20 +197,27 @@ export default function AstronomyPage() {
             )}
 
             {/* STAR CHART */}
-            <h2>🌌 Browse Star Charts</h2>
+            <h2>🌌 Constellation Explorer</h2>
             <p>Choose a constellation from the options below to view it`s star chart.</p>
             <select
                 value={constellation}
                 onChange={(event) => setConstellation(event.target.value)}
             >
-                <option value={"uma"}>Usra Major</option>
+                <option value={"uma"}>Ursa Major</option>
+                <option value={"umi"}>Ursa Mainor</option>
                 <option value={"ori"}>Orion</option>
                 <option value={"cas"}>Cassiopeia</option>
                 <option value={"cyg"}>Cygnus</option>
                 <option value={"leo"}>Leo</option>
+                <option value={"tau"}>Taurus</option>
+                <option value={"gem"}>Gemini</option>
+                <option value={"vir"}>Virgo</option>
+                <option value={"sco"}>Scorpius</option>
+                <option value={"sgr"}>Sagittarius</option>
+                <option value={"and"}>Andromeda</option>
             </select>
-            <button onClick={getAstronomyData} disabled={loading}>{loading ? "Generating..." : "Generate Star Chart"}</button>
-            {loading && (
+            <button onClick={getStarChart} disabled={chartLoading}>{chartLoading ? "Generating..." : "Generate Star Chart"}</button>
+            {chartLoading && (
                 <p>🛰️ Generating star chart, please standby...</p>
             )}
             <br></br>

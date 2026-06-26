@@ -27,7 +27,6 @@ router.get("/visible-objects", async (req, res) => {
                 },
             }
         );
-
         const visibleObjects = response.data.data.rows
             .filter((body) => {
                 const altitude = parseFloat(
@@ -56,7 +55,6 @@ router.get("/visible-objects", async (req, res) => {
 
 // MOON PHASE route
 router.post("/moon-phase", async (req, res) => {
-    console.log(req.body);
     const { latitude, longitude, date } = req.body;
 
     try {
@@ -79,7 +77,7 @@ router.post("/moon-phase", async (req, res) => {
                     date
                 },
                 view: {
-                    type: "landscape-simple",
+                    type: "portrait-simple",
                     orientation: "north-up"
                 }
             },
@@ -128,11 +126,6 @@ router.post("/star-chart", async (req, res) => {
     } catch (error) {
         console.error(error.response?.data || error.message);
         res.status(500).json({ error: "Failed to fetch visible objects" });
-        // console.error("FINAL DEBUG:", error.response ? error.response.data : error.message);
-        // res.status(500).json({
-        //     error: error.message,
-        //     details: error.response?.data
-        // });
     }
 });
 
