@@ -15,7 +15,7 @@ describe("authentication service", () => {
       const testPassword = "12345678!";
 
       fetch.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
-        status: 201,
+        status: 200,
       });
 
       await login(testEmail, testPassword);
@@ -38,7 +38,7 @@ describe("authentication service", () => {
       const testPassword = "12345678!";
 
       fetch.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
-        status: 201,
+        status: 200,
       });
 
       const token = await login(testEmail, testPassword);
@@ -57,7 +57,7 @@ describe("authentication service", () => {
         await login(testEmail, testPassword);
       } catch (err) {
         expect(err.message).toEqual(
-          "Received status 403 when logging in. Expected 201"
+          "Received status 403 when logging in. Expected 200"
         );
       }
     });
