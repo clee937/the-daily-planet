@@ -26,6 +26,7 @@ async function fetchFromNasa() {
 async function getApod() {
   // True cache: if we already saved today's APOD, return it with NO external calls.
     const cached = await Apod.findOne({ date: today() });
+    console.log("in the cache")
     if (cached) {
         return cached.toObject();
     }
