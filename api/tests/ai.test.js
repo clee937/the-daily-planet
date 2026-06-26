@@ -1,12 +1,11 @@
 const request = require("supertest");
 const app = require("../app");
 const JWT = require("jsonwebtoken");
+const { askGemini } = require("../services/geminiService");
+const User = require("../models/user");
 
 jest.mock("../services/geminiService");
 jest.mock("../models/user");
-
-const { askGemini } = require("../services/geminiService");
-const User = require("../models/user");
 
 // Generate a valid token for tests
 const testToken = JWT.sign(
