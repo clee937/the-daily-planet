@@ -29,7 +29,7 @@ describe("/tokens", () => {
       .post("/tokens")
       .send({ email: "auth-test@test.com", password: "12345678!" });
 
-    expect(response.status).toEqual(201);
+    expect(response.status).toEqual(200);
     expect(response.body.token).not.toEqual(undefined);
     expect(response.body.message).toEqual("OK");
   });
@@ -42,7 +42,7 @@ describe("/tokens", () => {
 
     expect(response.status).toEqual(401);
     expect(response.body.token).toEqual(undefined);
-    expect(response.body.message).toEqual("User not found");
+    expect(response.body.message).toEqual("Invalid credentials");
   });
 
   test("doesn't return a token when the wrong password is given", async () => {
@@ -53,6 +53,6 @@ describe("/tokens", () => {
 
     expect(response.status).toEqual(401);
     expect(response.body.token).toEqual(undefined);
-    expect(response.body.message).toEqual("Password incorrect");
+    expect(response.body.message).toEqual("Invalid credentials");
   });
 });

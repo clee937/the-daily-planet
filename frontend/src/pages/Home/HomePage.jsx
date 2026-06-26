@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "./HomePage.css";
 import PictureOfTheDay from "../../components/PictureOfTheDay";
+import { Chatbot } from "../../components/Chatbot";
 
 export function HomePage() {
   const token = localStorage.getItem("token");
@@ -10,6 +11,7 @@ export function HomePage() {
       <Link to="/signup">Sign Up</Link>
       <Link to="/login">Log In</Link>
       <PictureOfTheDay token={token} />
+      <Chatbot />
     </div>
   );
 }
