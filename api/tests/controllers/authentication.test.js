@@ -5,9 +5,11 @@ const User = require("../../models/user");
 
 describe("/tokens", () => {
   beforeAll(async () => {
+    await User.deleteMany({});
     const user = new User({
       email: "auth-test@test.com",
-      password: "12345678",
+      password: "12345678!",
+      username: "testuser",
     });
 
     // We need to use `await` so that the "beforeAll" setup function waits for
@@ -25,9 +27,9 @@ describe("/tokens", () => {
     const testApp = supertest(app);
     const response = await testApp
       .post("/tokens")
-      .send({ email: "auth-test@test.com", password: "12345678" });
+      .send({ email: "auth-test@test.com", password: "12345678!" });
 
-    expect(response.status).toEqual(201);
+    expect(response.status).toEqual(200);
     expect(response.body.token).not.toEqual(undefined);
     expect(response.body.message).toEqual("OK");
   });
@@ -36,11 +38,11 @@ describe("/tokens", () => {
     const testApp = supertest(app);
     const response = await testApp
       .post("/tokens")
-      .send({ email: "non-existent@test.com", password: "1234" });
+      .send({ email: "non-existent@test.com", password: "12345678!" });
 
     expect(response.status).toEqual(401);
     expect(response.body.token).toEqual(undefined);
-    expect(response.body.message).toEqual("User not found");
+    expect(response.body.message).toEqual("Invalid credentials");
   });
 
   test("doesn't return a token when the wrong password is given", async () => {
@@ -51,6 +53,6 @@ describe("/tokens", () => {
 
     expect(response.status).toEqual(401);
     expect(response.body.token).toEqual(undefined);
-    expect(response.body.message).toEqual("Password incorrect");
+    expect(response.body.message).toEqual("Invalid credentials");
   });
 });
