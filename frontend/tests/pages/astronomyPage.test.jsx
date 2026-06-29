@@ -6,7 +6,7 @@ describe("Astronomy Page", () => {
         render(<AstronomyPage />);
 
         expect(
-            screen.getByText(/what`s in the sky tonight/i)
+            screen.getByText(/what's in the sky tonight/i)
         ).toBeTruthy();
     });
 

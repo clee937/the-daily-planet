@@ -31,6 +31,8 @@ const router = createBrowserRouter([
       {
         path: "/astronomy",
         element: <AstronomyPage />,
+      },
+      {
         path: "/favourites",
         element: <FavouritesPage />,
       },
