@@ -18,7 +18,7 @@ export function SignupPage() {
       return;
     }
 
-    if (!email.includes("@")) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email!");
       return;
     }

@@ -93,6 +93,33 @@ describe("POST, when username already exists", () => {
   });
 });
 
+describe("POST, when email is invalid", () => {
+  test("response code is 400", async () => {
+    const response = await request(app)
+      .post("/users")
+      .send({ email: "@", password: "12345678!", username: "testuser" });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  test("does not create a user", async () => {
+    await request(app)
+      .post("/users")
+      .send({ email: "@@@@", password: "12345678!", username: "testuser" });
+
+    const users = await User.find();
+    expect(users.length).toEqual(0);
+  });
+
+  test("does not create a user with missing domain", async () => {
+    await request(app)
+      .post("/users")
+      .send({ email: "ben@", password: "12345678!", username: "testuser" });
+
+    const users = await User.find();
+    expect(users.length).toEqual(0);
+  });
+});
 
 describe("PATCH, when updating user details", () => {
 test("updates user", async () => {
