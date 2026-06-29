@@ -1,6 +1,15 @@
 import PictureOfTheDay from "../../src/components/PictureOfTheDay";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
+import { useOutletContext } from "react-router-dom";
+
+vi.mock("react-router-dom", async () => {
+    const actual = await vi.importActual("react-router-dom");
+    return {
+        ...actual,
+        useOutletContext: vi.fn(),
+    };
+});
 
 const fakeApod = {
     title: "The Houston Nebula",
@@ -17,6 +26,8 @@ describe("PictureOfTheDay", () => {
         ok: true,
         json: async () => ({ apod: fakeApod }),
     });
+    useOutletContext.mockReturnValue({ isLoggedIn: false });
+
     });
 
     afterEach(() => {
