@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { Chatbot } from "../../components/Chatbot";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -22,10 +23,8 @@ export function ISSPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
-    const [astronauts, setAstronauts] = useState(null);
-    const [astronautError, setAstronautError] = useState(null);
 
-    async function fetchLocation(showLoading = true ) {
+    const fetchLocation = useCallback(async (showLoading = true) => {
         try {
             if (showLoading) setLoading(true);
             const response = await fetch(`${BACKEND_URL}/iss`);
@@ -36,22 +35,10 @@ export function ISSPage() {
         }   finally {
             if (showLoading) setLoading(false);
         }
-    }
-
-    async function fetchAstronauts() {
-        try {
-            const response = await fetch("http://api.open-notify.org/astros.json");
-            const data = await response.json();
-            setAstronauts(data);
-        }   catch (err) {
-            console.error("Could not fetch astronauts");
-            setAstronautError("Could not load astronaut data")
-        }
-    }
+    }, []);
 
         useEffect(() => {
             fetchLocation();
-            fetchAstronauts();
             const interval = setInterval(() => fetchLocation(false), 10000);
 
             navigator.geolocation.getCurrentPosition(
@@ -79,16 +66,6 @@ export function ISSPage() {
                 <p>Latitude: {location.latitude}</p>
                 <p>Longitude: {location.longitude}</p>
                 <button onClick={fetchLocation}>Refresh Location</button>
-
-                {astronautError && <p>{astronautError}</p>}
-
-                {astronauts && (
-                    <div>
-                        <p>🧑‍🚀 {astronauts.number} astronauts on board:</p> 
-                        <p>{astronauts.people.slice(0, Math.ceil(astronauts.number / 2)).map(p => p.name).join(", ")}</p>
-                        <p>{astronauts.people.slice(Math.ceil(astronauts.number / 2)).map(p => p.name).join(", ")}</p>
-                    </div>
-                )}
 
                 {userLocation ? (
                     <p>📍 You are approximately {calculateDistance(
@@ -119,6 +96,8 @@ export function ISSPage() {
                         </Marker>
                     )}
                 </MapContainer>
+                <p><small>🛸 Rover's knowledge has a cutoff date and may not reflect current ISS crew or recent missions. Always verify with NASA for the latest information.</small></p>
+                <Chatbot />
             </div>
     );
 }
