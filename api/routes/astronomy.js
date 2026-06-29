@@ -8,6 +8,12 @@ router.get("/visible-objects", async (req, res) => {
     const lon = parseFloat(req.query.lon);
     const date = req.query.date;
 
+    if (isNaN(lat) || isNaN(lon) || !date) {
+        return res.status(400).json({
+            error: "Missing or invalid parameters"
+        });
+    }
+
     try {
         const response = await axios.get(
             "https://api.astronomyapi.com/api/v2/bodies/positions",
@@ -57,6 +63,12 @@ router.get("/visible-objects", async (req, res) => {
 router.post("/moon-phase", async (req, res) => {
     const { latitude, longitude, date } = req.body;
 
+    if (latitude === undefined || longitude === undefined || !date) {
+        return res.status(400).json({
+            error: "Latitude, longitude and date are required"
+        });
+    }
+
     try {
         const response = await axios({
             method: "POST",
@@ -98,6 +110,12 @@ router.post("/moon-phase", async (req, res) => {
 router.post("/star-chart", async (req, res) => {
     const { constellation } = req.body;
 
+    if (!constellation) {
+        return res.status(400).json({
+            error: "Constellation is required"
+        });
+    }
+
     try {
         const response = await axios({
             method: "POST",
@@ -125,7 +143,7 @@ router.post("/star-chart", async (req, res) => {
 
     } catch (error) {
         console.error(error.response?.data || error.message);
-        res.status(500).json({ error: "Failed to fetch visible objects" });
+        res.status(500).json({ error: "Star chart request failed" });
     }
 });
 

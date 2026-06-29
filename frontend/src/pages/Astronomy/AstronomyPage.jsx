@@ -50,9 +50,14 @@ export default function AstronomyPage() {
     }
 
     // Function to call VISIBLE OBJECTS route:
-    const getVisibleObjects = async (lat, lon) => {
+    const getVisibleObjects = async (lat, lon) => {        
+        if (lat === null || lon === null) {
+            alert("Location required");
+            return;
+        }
+
         const response = await fetch(`http://localhost:3000/api/astronomy/visible-objects?lat=${lat}&lon=${lon}&date=${visibleObjectsDate}`);
-        
+
         if (!response.ok) {
             console.error("Failed to fetch visible objects");
             return;
@@ -134,15 +139,11 @@ export default function AstronomyPage() {
     return(
         <div>
             {/* VISIBLE OBJECTS */}
-            <h2>✨ What`s in the Sky Tonight?</h2>
-            <p className="superman"><em>`Is it a bird? Is it a plane?`</em></p>
-            <p>Use your current location to discover what`s visible in your sky tonight.</p>
+            <h2>✨ What's in the Sky Tonight?</h2>
+            <p className="superman"><em>'Is it a bird? Is it a plane?'</em></p>
+            <p>Use your current location to discover what's visible in your sky tonight.</p>
             <p>🔭 <em>Visible objects calculated for 22:00 local time.</em></p>
-            <input
-                type="date"
-                value={visibleObjectsDate}
-                onChange={(event) => setVisibleObjectsDate(event.target.value)}
-            />
+            <input type="date" value={visibleObjectsDate} onChange={(event) => setVisibleObjectsDate(event.target.value)}/>
             <br></br>
             <br></br>
             <button onClick={getCurrentLocation}>Refresh Location</button>
@@ -154,22 +155,10 @@ export default function AstronomyPage() {
                 <div>
                     <ul className="astronomy-grid">
                         {visibleObjects.map((object) => (
-                            <div
-                            key={object.name} className="astronomy-card"
-                            >
-                                <h3>
-                                    {object.type === "Natural Satellite" ? "🌙" : "🪐"}
-                                    {" "}
-                                    {object.name}
-                                </h3>
-                                <p className="card-details">
-                                    🧭 Direction: {getDirection(object.azimuth)}
-                                    {" "}
-                                    ({object.azimuth.toFixed(0)}°)
-                                </p>
-                                <p className="card-details">
-                                    ⬆️ Height: {object.altitude.toFixed(1)}° above horizon
-                                </p>
+                            <div key={object.name} className="astronomy-card">
+                                <h3>{object.type === "Natural Satellite" ? "🌙" : "🪐"}{" "}{object.name}</h3>
+                                <p className="card-details">🧭 Direction: {getDirection(object.azimuth)}{" "}({object.azimuth.toFixed(0)}°)</p>
+                                <p className="card-details">⬆️ Height: {object.altitude.toFixed(1)}° above horizon</p>
                             </div>
                         ))}
                     </ul>
@@ -179,11 +168,7 @@ export default function AstronomyPage() {
             {/* MOON PHASE */}
             <h2>🌒 Moon Phase Explorer</h2>
             <p>Use your current location to see what phase the moon will be in on a day of your choice.</p>
-            <input
-                type="date"
-                value={moonDate}
-                onChange={(event) => setMoonDate(event.target.value)}
-            />
+            <input type="date" value={moonDate} onChange={(event) => setMoonDate(event.target.value)}/>
             <button onClick={getMoonPhase} disabled={moonLoading}>{moonLoading ? "Fetching..." : "Explore Moon Phase"}</button>
             {moonLoading && (
                 <p>🛰️ Fetching moon phase, please standby...</p>
@@ -198,14 +183,11 @@ export default function AstronomyPage() {
 
             {/* STAR CHART */}
             <h2>🌌 Constellation Explorer</h2>
-            <p>Choose a constellation from the options below to view it`s star chart.</p>
+            <p>Choose a constellation from the options below to view it's star chart.</p>
             <p>🔭 <em>Star charts are generated from a fixed observation point in London, UK.</em></p>
-            <select
-                value={constellation}
-                onChange={(event) => setConstellation(event.target.value)}
-            >
+            <select value={constellation} onChange={(event) => setConstellation(event.target.value)}>
                 <option value={"uma"}>Ursa Major</option>
-                <option value={"umi"}>Ursa Mainor</option>
+                <option value={"umi"}>Ursa Minor</option>
                 <option value={"ori"}>Orion</option>
                 <option value={"cas"}>Cassiopeia</option>
                 <option value={"cyg"}>Cygnus</option>
