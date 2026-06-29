@@ -5,7 +5,7 @@ function LogoutButton( {setIsLoggedIn} ) {
 
   function logOut() {
     localStorage.removeItem("token");
-    setIsLoggedIn(false)
+    setIsLoggedIn(false);
     navigate("/");
   }
 

@@ -59,7 +59,6 @@ function PictureOfTheDay({token}) {
                 mediaType:apod.mediaType,
                 sourceId:apod.date,
             }}
-            token={token}
         />
     </section>
     );
