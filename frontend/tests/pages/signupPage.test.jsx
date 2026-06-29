@@ -139,4 +139,22 @@ test("shows error when password is too short", async () => {
   expect(screen.getByText("Password must be at least 8 characters!")).toBeTruthy();
   expect(signup).not.toHaveBeenCalled();
 });
+
+test("shows error when email format is invalid", async () => {
+  render(<SignupPage />);
+
+  const user = userEvent.setup();
+  const emailInputEl = screen.getByLabelText("Email:");
+  const passwordInputEl = screen.getByLabelText("Password:");
+  const usernameInputEl = screen.getByLabelText("Username:");
+  const submitButtonEl = screen.getByRole("submit-button");
+
+  await user.type(emailInputEl, "@");
+  await user.type(passwordInputEl, "12345678!");
+  await user.type(usernameInputEl, "testuser");
+  await user.click(submitButtonEl);
+
+  expect(screen.getByText("Please enter a valid email!")).toBeTruthy();
+  expect(signup).not.toHaveBeenCalled();
+});
 });
