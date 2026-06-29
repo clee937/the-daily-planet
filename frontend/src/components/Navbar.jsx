@@ -1,21 +1,41 @@
-// import { Link } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
 import logo from "../assets/the_daily_planet_logo.png";
+import { NavLink } from "react-router-dom";
+import { useState } from "react";
 import "./Navbar.css";
 
-function Navbar() {
+function Navbar({ isLoggedIn, setIsLoggedIn }) {
+
+    const activeClass = ({ isActive }) => `navbar-link ${isActive ? "active" : ""}`;
+
     return (
         <nav className="navbar">
             <div className="navbar-left">
                 <img src={logo} alt="logo" className="navbar-logo" />
             </div>
-            <div className="navbar-centre">
-                <a href="#" className="nav-link">Home</a>
-                <a href="#" className="nav-link">Profile</a>
-            </div>
-            <div className="navbar-right">
-                <LogoutButton />
-            </div>
+                {isLoggedIn ? (
+                    <>
+                        <div className="navbar-centre">
+                            <NavLink to="/" className={activeClass}>Home</NavLink>
+                            <NavLink to="/iss" className={activeClass}>ISS</NavLink>
+                            <NavLink to="/profile" className={activeClass}>My Profile</NavLink>
+                        </div>
+                        <div className="navbar-right">
+                            <LogoutButton setIsLoggedIn={setIsLoggedIn}/>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="navbar-centre">
+                            <NavLink to="/" className={activeClass}>Home</NavLink>
+                            <NavLink to="/iss" className={activeClass}>ISS</NavLink>
+                        </div>
+                        <div className="navbar-right">
+                            <NavLink to="/login" className={activeClass}>Log In</NavLink>
+                            <NavLink to="/signup" className={activeClass}>Sign Up</NavLink>
+                        </div>
+                    </>
+                )}
         </nav>
     );
 }

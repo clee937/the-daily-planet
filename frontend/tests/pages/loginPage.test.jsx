@@ -2,16 +2,21 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { login } from "../../src/services/authentication";
 
 import { LoginPage } from "../../src/pages/Login/LoginPage";
 
-// Mocking React Router's useNavigate function
-vi.mock("react-router-dom", () => {
-  const navigateMock = vi.fn();
-  const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
-  return { useNavigate: useNavigateMock };
+vi.mock("react-router-dom", async () => {
+    const actual = await vi.importActual("react-router-dom");
+
+    const navigateMock = vi.fn();
+    const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
+    return { 
+      ...actual,
+      useNavigate: useNavigateMock,
+      useOutletContext: vi.fn(),
+    };
 });
 
 // Mocking the login service
@@ -39,6 +44,8 @@ describe("Login Page", () => {
   });
 
   test("allows a user to login", async () => {
+    useOutletContext.mockReturnValue({ isLoggedIn: false });
+
     render(<LoginPage />);
 
     await completeLoginForm();
@@ -46,18 +53,9 @@ describe("Login Page", () => {
     expect(login).toHaveBeenCalledWith("test@email.com", "1234");
   });
 
-  // test("navigates to /posts on successful login", async () => {
-  //   render(<LoginPage />);
-
-  //   login.mockResolvedValue("secrettoken123");
-  //   const navigateMock = useNavigate();
-
-  //   await completeLoginForm();
-
-  //   expect(navigateMock).toHaveBeenCalledWith("/posts");
-  // });
-
   test("navigates to /login on unsuccessful login", async () => {
+    useOutletContext.mockReturnValue({ isLoggedIn: false });
+
     render(<LoginPage />);
 
     login.mockRejectedValue(new Error("Error logging in"));

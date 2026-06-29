@@ -1,16 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 //user must be logged in to favourite an image
-function FavouriteButton({ picture, token }) {
+function FavouriteButton({ picture }) {
     const [saved, setSaved] = useState(false);  //tracking if the post has been saved, a save is in progress, and errors
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const { isLoggedIn } = useOutletContext();
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+                    setSaved(false);
+                    setError(null);
+                }
+            }, [isLoggedIn]);
 
     async function handleSave() {
     if (!token) {
+        setSaved(false);
         setError("You must be logged in to use this feature"); //message to non-logged in users
         return;
     }

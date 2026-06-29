@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
-function LogoutButton() {
+function LogoutButton( {setIsLoggedIn} ) {
   const navigate = useNavigate();
 
   function logOut() {
     localStorage.removeItem("token");
+    setIsLoggedIn(false);
     navigate("/");
   }
 

@@ -8,8 +8,6 @@ export function HomePage() {
   return (
     <div className="home">
       <h1>Welcome to The Daily Planet!</h1>
-      <Link to="/signup">Sign Up</Link>
-      <Link to="/login">Log In</Link>
       <PictureOfTheDay token={token} />
       <Chatbot />
     </div>

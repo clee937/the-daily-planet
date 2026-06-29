@@ -32,28 +32,35 @@
     gap: 2rem;
 }
 
-.navbar-centre .nav-link {
-    text-decoration: none;
-    color: #EBDED0;
-    font-weight: 500;
-    cursor: pointer;
+/* RHS container */
+.navbar-right {
+    display: flex;
+    gap: 1rem;
 }
 
-.navbar-centre .nav-link:hover {
-    opacity: 0.8;
-}
-
-/* Log out container */
 .navbar-right button {
     background: transparent;
     border: none;
     text-decoration: none;
     color: #EBDED0;
-    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: #EBDED0;
     font-weight: 500;
     cursor: pointer;
 }
 
-.navbar-right button:hover {
-    opacity: 0.8;
+.navbar-link:hover {
+    color: #ebded09e;
+    text-decoration: none;
+}
+
+.navbar-link.active {
+    font-weight: bold;
+    text-decoration: underline;
 }

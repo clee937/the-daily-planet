@@ -26,28 +26,6 @@ describe("Home Page", () => {
     expect(heading.textContent).toEqual("Welcome to The Daily Planet!");
   });
 
-  test("Displays a signup link", async () => {
-    render(
-      <BrowserRouter>
-        <HomePage />
-      </BrowserRouter>
-    );
-
-    const signupLink = screen.getByText("Sign Up");
-    expect(signupLink.getAttribute("href")).toEqual("/signup");
-  });
-
-  test("Displays a login link", async () => {
-    render(
-      <BrowserRouter>
-        <HomePage />
-      </BrowserRouter>
-    );
-
-    const loginLink = screen.getByText("Log In");
-    expect(loginLink.getAttribute("href")).toEqual("/login");
-  });
-
   test("Renders the chatbot", async () => {
     render(
       <BrowserRouter>
