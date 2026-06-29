@@ -63,13 +63,17 @@ async function askGemini(prompt) {
 
 // service to summarise NASA data
 async function generateFact(title, explanation) {
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
-        contents: `You are a friendly space expert. In 3 sentence or less in simple English, please summarise this: ${title}, ${explanation}`
-    })
-    return response.text();
-};
-
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-3.1-flash-lite",
+            contents: `You are a friendly space expert. In 3 sentences or less in simple English, please summarise this: ${title}, ${explanation}`,
+    });
+    return response.text; 
+    } catch (err) {
+    console.error("Houston, we had a problem while generating a fact:", err.message);
+    return null;
+    }
+}
 module.exports = {
     askGemini, generateFact
 };

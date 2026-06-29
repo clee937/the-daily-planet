@@ -47,6 +47,7 @@ function PictureOfTheDay({token}) {
         )}
 
         <p className="apod-explanation">{apod.explanation}</p>
+        {apod.fact && <p className="apod-fact">{apod.fact}</p>}
         {apod.copyright && <p className="apod-credit">© {apod.copyright}</p>}
 
             <FavouriteButton

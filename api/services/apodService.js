@@ -1,5 +1,5 @@
 const Apod = require("../models/Apod");
-const { generateFact } = require("./geminiServiceMin");
+const { generateFact } = require("./geminiService");
 
 const APOD_URL = "https://api.nasa.gov/planetary/apod";
 
@@ -52,13 +52,17 @@ async function getApod() {
   // 3. Generate the AI fact (defensively — a failure won't break APOD).
   let fact = null;
   try {
-    fact = await generateFact(fresh.title, fresh.explanation);
-  } catch (err) {
-    console.error("Gemini fact failed (saving APOD without it):", err.message);
-  }
+      fact = await generateFact(fresh.title, fresh.explanation);
+} catch (err) {
+  console.error(">>> Gemini fact failed:", err.message);
+}
 
-  // 4. Save to cache so future requests skip NASA entirely.
-  const saved = await Apod.create({ ...fresh, fact });
+  // 4. Save to cache so future requests skip API entirely.
+  const saved = await Apod.findOneAndUpdate(
+    { date:fresh.date },
+    { ... fresh, fact },
+    { upsert: true, new: true }
+  );
   return saved.toObject();
 }
 
