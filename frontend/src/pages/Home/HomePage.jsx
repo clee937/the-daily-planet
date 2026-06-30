@@ -15,6 +15,10 @@ export function HomePage() {
           <Chatbot />
         </div>
       </div>
+      <footer className="hud-footer">
+        <span>THE DAILY PLANET</span>
+        <span>// BUILT BY [your team name] · 2026</span>
+      </footer>
     </div>
   );
 }

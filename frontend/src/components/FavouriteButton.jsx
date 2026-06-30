@@ -73,7 +73,7 @@ return (
 
         {error && (
             <div>
-                <p style= {{ colour: "red" }}>
+                <p style= {{ color: "red" }}>
                     {error} <Link to="/signup">Sign up</Link> or {" "}
                     <Link to="/login">Log in</Link>
                 </p>

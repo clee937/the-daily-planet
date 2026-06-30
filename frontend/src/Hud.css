@@ -44,6 +44,7 @@ body {
     background: var(--bg);
     color: var(--text-body);
     font-family: var(--font-mono);
+    font-size: 16px;          /* base body size — accessible baseline */
     line-height: 1.7;
 }
 
@@ -51,24 +52,24 @@ body {
 .hud-statusbar {
     background: var(--panel-header);
     border-bottom: 1px solid var(--border);
-    padding: 12px 18px;
+    padding: 14px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 .hud-brand {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text);
     letter-spacing: 0.14em;
 }
 .hud-brand .sub {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-label);
     letter-spacing: 0.1em;
     margin-left: 8px;
 }
 .hud-status {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--accent);
     letter-spacing: 0.08em;
 }
@@ -88,11 +89,11 @@ body {
 .hud-nav {
     display: flex;
     border-bottom: 1px solid var(--border);
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 0.1em;
 }
 .hud-nav a {
-    padding: 9px 16px;
+    padding: 12px 18px;
     color: var(--text-label);
     text-decoration: none;
     border-right: 1px solid var(--border);
@@ -120,31 +121,36 @@ body {
 .hud-panel-header {
     display: flex;
     justify-content: space-between;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--border);
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-label);
     letter-spacing: 0.1em;
 }
 .hud-panel-header .date { color: var(--accent); }
-.hud-panel-body { padding: 14px; }
+.hud-panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;            /* even space between title, explanation, fact, button */
+    padding: 20px;
+}
 
 /* ---------- APOD headline (serif against the mono UI) ---------- */
 .apod-title {
     font-family: var(--font-serif);
-    font-size: 22px;
+    font-size: 26px;
     color: var(--text);
     line-height: 1.2;
     margin: 0 0 10px;
 }
 .apod-explanation {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--text-body);
     line-height: 1.7;
     margin: 0;
 }
 .apod-credit {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-label);
     margin-top: 8px;
 }
@@ -154,16 +160,16 @@ body {
     border: 1px solid var(--rover-border);
     border-radius: var(--radius);
     background: var(--rover-bg);
-    padding: 12px;
+    padding: 16px;
 }
 .rover-label {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--rover-label);
     letter-spacing: 0.1em;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 .rover-fact {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--rover-text);
     line-height: 1.6;
     margin: 0;
@@ -171,7 +177,7 @@ body {
 
 /* ---------- Telemetry readout ---------- */
 .telemetry-label {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-label);
     letter-spacing: 0.1em;
     margin-bottom: 10px;
@@ -179,29 +185,45 @@ body {
 .telemetry-row {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-label);
-    margin-bottom: 7px;
+    margin-bottom: 8px;
 }
 .telemetry-row .value { color: var(--text); }
 .telemetry-row .value.signal { color: var(--accent); }
 
-/* ---------- Save button (green fill, dark text) ---------- */
+/* ---------- Fav button (green fill, dark text) ---------- */
 .hud-button {
     background: var(--accent);
     color: var(--accent-ink);
     border: none;
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 500;
     letter-spacing: 0.06em;
-    padding: 12px 0;
-    width: 100%;
+    padding: 14px 0;
+    width: 25%;
+    align-self: center;
     border-radius: var(--radius);
     cursor: pointer;
 }
 .hud-button:hover { filter: brightness(1.08); }
 .hud-button:active { transform: scale(0.98); }
+.hud-button:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.favourite p {
+    color: #FF8A8A;
+    font-size: 14px;
+}
+.favourite a {
+    color: #7FE8FF;
+}
+.favourite a:hover {
+    color: #FFFFFF;
+}
 
 /* ---------- Rover chat ---------- */
 .chat-panel {
@@ -213,25 +235,25 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 9px 12px;
+    padding: 11px 14px;
     border-bottom: 1px solid var(--border);
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-label);
     letter-spacing: 0.1em;
 }
 .chat-body {
-    padding: 12px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 11px;
 }
 .chat-user {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--cyan);
 }
 .chat-user .prompt { color: var(--text-label); }
 .chat-rover {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--rover-text);
     line-height: 1.6;
 }
@@ -240,17 +262,17 @@ body {
     display: flex;
     gap: 8px;
     align-items: center;
-    padding: 10px 12px;
+    padding: 12px 14px;
     border-top: 1px solid var(--border);
 }
-.chat-input .caret { color: var(--accent); font-size: 13px; }
+.chat-input .caret { color: var(--accent); font-size: 15px; }
 .chat-input input {
     flex: 1;
     background: transparent;
     border: none;
     color: var(--text-body);
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 14px;
 }
 .chat-input input::placeholder { color: var(--text-label); }
 .chat-input button {
@@ -258,11 +280,19 @@ body {
     border: 1px solid #4A6478;
     color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 11px;
-    padding: 5px 12px;
+    font-size: 14px;
+    padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
 }
+
+.chat-error {
+    color: #FF8A8A;
+    font-size: 14px;
+    margin: 0 0 8px;
+}
+.chat-error a { color: #7FE8FF; }
+.chat-error a:hover { color: #FFFFFF}
 
 /* ---------- Layout grid ---------- */
 .hud-main {
@@ -275,6 +305,19 @@ body {
     display: flex;
     flex-direction: column;
     gap: 14px;
+}
+/* ---------- Footer ---------- */
+.hud-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    margin-top: 24px;
+    border-top: 1px solid #33455A;
+    font-family: 'SF Mono', 'Roboto Mono', ui-monospace, monospace;
+    font-size: 13px;
+    color: #A6B8C8;
+    letter-spacing: 0.1em;
 }
 
 /* ---------- Responsive: stack on small screens ---------- */
