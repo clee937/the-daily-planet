@@ -4,6 +4,7 @@ import { vi } from "vitest";
 
 import { useNavigate } from "react-router-dom";
 import { signup } from "../../src/services/authentication";
+import { toast } from "react-toastify";
 
 import { SignupPage } from "../../src/pages/Signup/SignupPage";
 
@@ -19,6 +20,11 @@ vi.mock("../../src/services/authentication", () => {
   const signupMock = vi.fn();
   return { signup: signupMock };
 });
+
+// Mocking react-toastify
+vi.mock("react-toastify", () => ({
+  toast: { success: vi.fn() },
+}));
 
 // Mocking localStorage
 const localStorageMock = {
@@ -156,5 +162,12 @@ test("shows error when email format is invalid", async () => {
 
   expect(screen.getByText("Please enter a valid email!")).toBeTruthy();
   expect(signup).not.toHaveBeenCalled();
+});
+
+test("shows a success toast on signup", async () => {
+  signup.mockResolvedValue("secrettoken123");
+  render(<SignupPage />);
+  await completeSignupForm();
+  expect(toast.success).toHaveBeenCalled();
 });
 });

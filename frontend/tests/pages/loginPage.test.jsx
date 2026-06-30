@@ -4,6 +4,7 @@ import { vi } from "vitest";
 
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { login } from "../../src/services/authentication";
+import { toast } from "react-toastify";
 
 import { LoginPage } from "../../src/pages/Login/LoginPage";
 
@@ -24,6 +25,10 @@ vi.mock("../../src/services/authentication", () => {
   const loginMock = vi.fn();
   return { login: loginMock };
 });
+
+vi.mock("react-toastify", () => ({
+  toast: { success: vi.fn() },
+}));
 
 // Reusable function for filling out login form
 async function completeLoginForm() {
@@ -64,5 +69,16 @@ describe("Login Page", () => {
     await completeLoginForm();
 
     expect(navigateMock).toHaveBeenCalledWith("/login");
+  });
+
+    test("shows a success toast on login", async () => {
+    useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
+    login.mockResolvedValue("secrettoken123");
+
+    render(<LoginPage />);
+
+    await completeLoginForm();
+
+    expect(toast.success).toHaveBeenCalled();
   });
 });
