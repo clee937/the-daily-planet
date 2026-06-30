@@ -216,7 +216,7 @@ describe("DELETE a user", () => {
   const response = await request(app)
     .delete(`/users/${user._id}`);
 
-  expect(response.statusCode).toBe(201);
+  expect(response.statusCode).toBe(200);
   expect(response.body.message).toBe("User deleted");
 
   const deleted = await User.findById(user._id);
@@ -321,6 +321,46 @@ test("does not return the password", async () => {
   expect(response.body.user.password).toBeUndefined();
 });
 });
+
+describe("GET /check-email", () => {
+  test("returns taken: false if email does not exist in db", async () => {
+    const response = await request(app)
+      .get(`/users/check-email?email=nottest@nottest.com`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.taken).toBe(false);
+
+  });
+
+  test("returns taken: true if email does exist in db", async () => {
+    const user = await User.create({
+      email: "test@test.com",
+      password: "12345678!",
+      username: "username"
+    });
+
+    const response = await request(app)
+      .get(`/users/check-email?email=test@test.com`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.taken).toBe(true);
+  });
+
+  test("returns 400 on error", async () => {
+    const user = await User.create({
+      email: "test@test.com",
+      password: "12345678!",
+      username: "username"
+    });
+
+    const response = await request(app)
+      .get(`/users/check-emai?email=test@test.com`);
+
+    expect(response.statusCode).toBe(400);
+  });
+});
+
+
 });
 
 
