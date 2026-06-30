@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { signup } from "../../services/authentication";
 
@@ -36,6 +37,13 @@ export function SignupPage() {
     try {
       const token = await signup(email, password, username);
       localStorage.setItem("token", token)
+      toast.success(
+        <>
+        Sign up successful!
+        <br />
+        Welcome to The Daily Planet 🚀
+      </>
+    );
       navigate("/login");
     } catch (err) {
       console.error(err);
