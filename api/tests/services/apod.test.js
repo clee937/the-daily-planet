@@ -1,9 +1,10 @@
 const { getApod } = require("../../services/apodService");
-const { generateFact } = require("../../services/geminiServiceMin");
+const { generateFact } = require("../../services/geminiService");
 const Apod = require("../../models/Apod");
 
-jest.mock("../../services/geminiServiceMin", () => ({
+jest.mock("../../services/geminiService", () => ({
     generateFact: jest.fn().mockResolvedValue("a test fact"),
+    askGemini: jest.fn().mockResolvedValue("a test answer"),
 }));
 jest.mock("../../models/Apod");
 
@@ -15,30 +16,30 @@ describe("apodService - getApod", () => {
     });
 
     it("should return formatted data when fetch is successful", async () => {
-        Apod.findOne.mockResolvedValue(null);
-        Apod.create.mockResolvedValue({
+        Apod.findOneAndUpdate.mockResolvedValue({
             toObject: () => ({
+                date: "2026-06-23",
                 title: "NASA Image",
                 explanation: "A photo in space",
                 url: "http://image.jpg",
                 hdurl: "http://hdimage.jpg",
-                date: "2026-06-23",
                 mediaType: "image",
                 copyright: "NASA",
-                fact: "a test fact",
-        }),
-    });
+                fact: "A fascinating space fact.",
+    }),
+});
 
     global.fetch.mockResolvedValue({
         ok: true,
         json: jest.fn().mockResolvedValue({
-            title: "NASA Image",
-            explanation: "A photo in space",
-            url: "http://image.jpg",
-            hdurl: "http://hdimage.jpg",
-            date: "2026-06-23",
-            media_type: "image",
-            copyright: "NASA",
+                date: "2026-06-23",
+                title: "NASA Image",
+                explanation: "A photo in space",
+                url: "http://image.jpg",
+                hdurl: "http://hdimage.jpg",
+                mediaType: "image",
+                copyright: "NASA",
+                fact: "A fascinating space fact.",
         }),
     });
 
@@ -51,6 +52,7 @@ describe("apodService - getApod", () => {
     expect(data.mediaType).toBe("image");
     expect(data.copyright).toBe("NASA");
     expect(global.fetch).toHaveBeenCalled();
+    expect(data.fact).toBe("A fascinating space fact.");
     });
 
     it("should throw an error if the fetch is unsuccessful", async () => {
