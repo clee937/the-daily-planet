@@ -15,7 +15,7 @@ export async function getUser(token) {
     },
     };
     const response = await fetch(`${BACKEND_URL}/users/${userId}`, requestOptions);
-    if (response.status === 200) {
+    if (response.status === 201) {
         return await response.json();
     } else {
         throw new Error(`Received status ${response.status} when fetching user.`);
@@ -33,7 +33,7 @@ export async function editUser(token, updatedDetails) {
         body: JSON.stringify(updatedDetails),
     };
     const response = await fetch(`${BACKEND_URL}/users/${userId}`, requestOptions);
-    if (response.status === 200) {
+    if (response.status === 201) {
         return await response.json();
     } else {
         throw new Error(`Received status ${response.status} when editing user.`);
@@ -54,4 +54,13 @@ export async function deleteUser(token) {
     } else {
         throw new Error(`Received status ${response.status} when deleting user.`);
     }
+}
+
+export async function checkEmail(email) {
+    const response = await fetch(`${BACKEND_URL}/users/check-email?email=${(email)}`, {
+        method: "GET",
+    });
+    console.log(response);
+    const data = await response.json();
+    return data.taken;
 }

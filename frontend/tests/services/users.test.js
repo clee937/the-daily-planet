@@ -1,6 +1,6 @@
 import createFetchMock from "vitest-fetch-mock";
 import { describe, vi } from "vitest";
-import { getUser, editUser, deleteUser } from "../../src/services/users";
+import { getUser, editUser, deleteUser, checkEmail } from "../../src/services/users";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -15,7 +15,7 @@ describe("users service", () => {
     describe("getUser", () => {
         test("calls the correct backend URL", async () => {
         fetch.mockResponseOnce(JSON.stringify({ user: { email: "test@test.com" } }), {
-            status: 200,
+            status: 201,
         });
 
         await getUser(fakeToken);
@@ -31,7 +31,7 @@ describe("users service", () => {
 
         test("returns the user data on success", async () => {
         fetch.mockResponseOnce(JSON.stringify({ user: { email: "test@test.com" } }), {
-            status: 200,
+            status: 201,
         });
 
         const data = await getUser(fakeToken);
@@ -54,7 +54,7 @@ describe("users service", () => {
     describe("editUser", () => {
         test("calls the correct backend URL with PATCH", async () => {
         fetch.mockResponseOnce(JSON.stringify({ user: { email: "new@test.com" } }), {
-            status: 200,
+            status: 201,
         });
 
         await editUser(fakeToken, { email: "new@test.com" });
@@ -110,5 +110,47 @@ describe("users service", () => {
         }
         });
     });
+
+    describe("checkEmail", () => {
+        test("calls the correct backend URL", async () => {
+            fetch.mockResponseOnce(
+                JSON.stringify({ taken: true }),
+                { status: 200 }
+            );
+
+            await checkEmail("test@test.com");
+
+            const fetchArguments = fetch.mock.lastCall;
+            const url = fetchArguments[0];
+            const options = fetchArguments[1];
+
+            expect(url).toEqual(
+            `${BACKEND_URL}/users/check-email?email=test@test.com`
+            );
+            expect(options.method).toEqual("GET");
+        });
+
+        test("returns true when the email is already taken", async () => {
+            fetch.mockResponseOnce(
+                JSON.stringify({ taken: true }),
+                { status: 200 }
+            );
+
+            const taken = await checkEmail("test@test.com");
+
+            expect(taken).toBe(true);
+            });
+
+        test("returns false when the email is available", async () => {
+            fetch.mockResponseOnce(
+                JSON.stringify({ taken: false }),
+                { status: 200 }
+            );
+
+            const taken = await checkEmail("new@test.com");
+
+            expect(taken).toBe(false);
+        });
+});
 
 });
