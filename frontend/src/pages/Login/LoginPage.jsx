@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authentication";
 import { useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,8 +15,9 @@ export function LoginPage() {
     try {
       const token = await login(email, password);
       localStorage.setItem("token", token);
+      toast.success("Logged in successfully! 🚀");
       setIsLoggedIn(true);
-      navigate("/");
+      navigate("/")
     } catch (err) {
       console.error(err);
       navigate("/login");

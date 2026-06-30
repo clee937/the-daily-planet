@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -9,6 +10,7 @@ function FavouriteButton({ picture }) {
     const [saved, setSaved] = useState(false);  //tracking if the post has been saved, a save is in progress, and errors
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const [favouriteId, setFavouriteId] = useState(null);
     const { isLoggedIn } = useOutletContext();
     const token = localStorage.getItem("token");
 
@@ -16,6 +18,7 @@ function FavouriteButton({ picture }) {
         if (!isLoggedIn) {
                     setSaved(false);
                     setError(null);
+                    setFavouriteId(null);
                 }
             }, [isLoggedIn]);
 
@@ -46,12 +49,17 @@ function FavouriteButton({ picture }) {
         }),
         });
 
+        const data = await res.json();
+
         if (res.status === 409) { // checks for duplicate handling. 409 returns if the item has already been favourited
             setSaved(true);       // clicking on fav button when already fav'd doesn't cause an error
+            setFavouriteId(data.favourite._id); //capture id when already saved
         } else if (!res.ok) {
         throw new Error("Could not save favourite");
         } else {
         setSaved(true);
+        setFavouriteId(data.favourite._id); //captrue id on a fresh save
+        toast.success("Added to favourites ⭐");
         }
     } catch (err) {
     setError(err.message);
@@ -60,12 +68,33 @@ function FavouriteButton({ picture }) {
     }
 }
 
+    async function handleRemove() {
+        if (!favouriteId) return;
+
+        setSaving(true);
+        setError(null);
+        try {
+            const res = await fetch(`${API_URL}/favourites/${favouriteId}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error("Could not remove favourite");
+            setSaved(false);
+            setFavouriteId(null);
+            toast.success("Removed from favourites");
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setSaving(false);
+        }
+    }
+
 return (
     <div className="favourite">
         <button
             className="favourite-button"
-            onClick={handleSave}
-            disabled={saving || saved}
+            onClick={saved ? handleRemove : handleSave } //toggled between save and remove
+            disabled={saving} // removed || so the buttin stays clickable when saved
             data-testid="favourite-button"
         >
         {saved ? "★ Saved" : saving ? "Saving…" : "☆ Save to favourites"}

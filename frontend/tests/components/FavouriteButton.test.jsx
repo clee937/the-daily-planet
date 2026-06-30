@@ -93,7 +93,12 @@ describe("FavouriteButton", () => {
         const context = { isLoggedIn: true };
         useOutletContext.mockReturnValue(context);
         localStorage.setItem("token", "fake-token");
-        global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200 });
+        global.fetch = vi.fn().mockResolvedValue({ 
+            ok: true, 
+            status: 200,
+            json: async () => ({ favourite: { _id: "fav1" } }) 
+        });
+
         const { rerender } = renderButton({ picture: fakePicture });
         screen.getByTestId("favourite-button").click();
         await waitFor(() => {
