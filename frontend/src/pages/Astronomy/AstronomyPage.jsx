@@ -139,18 +139,19 @@ export default function AstronomyPage() {
 
     return(
         <div>
-            {/* VISIBLE OBJECTS */}
-            <h2>✨ What's in the Sky Tonight?</h2>
-            <p className="superman"><em>'Is it a bird? Is it a plane?'</em></p>
-            <p>Use your current location to discover what will be visible in the night sky on a day of your choice:</p>
-            <p>🔭 <em>Visible objects calculated for 22:00 local time.</em></p>
-            <input type="date" value={visibleObjectsDate} onChange={(event) => setVisibleObjectsDate(event.target.value)}/>
-            <br></br>
-            <br></br>
+            <h1>🌍 Visible Objects Near You</h1>
+            <p>Use your current location to explore visible objects near you.</p>
             <button onClick={getCurrentLocation}>Refresh Location</button>
             {lat !== null && lon !== null && (
                 <p>📍 <em>Current location:</em> {`[Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}]`}</p>
             )}
+            {/* VISIBLE OBJECTS */}
+            <h2>✨ What's in the Sky Tonight?</h2>
+            <p><small>'Is it a bird? Is it a plane?'</small></p>
+            <p>Discover what will be visible in the night sky on a day of your choosing.</p>
+            <p><small>🔭 Visible objects calculated for 22:00 local time.</small></p>
+            <label htmlFor="visible-date">Select a date for visible objects: </label>
+            <input id="visible-date" type="date" value={visibleObjectsDate} onChange={(event) => setVisibleObjectsDate(event.target.value)}/>
             {locationError && <p>{locationError}</p>}
             {visibleObjects.length > 0 && (
                 <div>
@@ -168,8 +169,9 @@ export default function AstronomyPage() {
 
             {/* MOON PHASE */}
             <h2>🌒 Moon Phase Explorer</h2>
-            <p>Use your current location to discover what phase the moon will be in on a day of your choice:</p>
-            <input type="date" value={moonDate} onChange={(event) => setMoonDate(event.target.value)}/>
+            <p>Discover what phase the Moon will be in on a day of your choosing.</p>
+            <label htmlFor="moon-date">Select a date for Moon phase: </label>
+            <input id="moon-date" type="date" value={moonDate} onChange={(event) => setMoonDate(event.target.value)}/>
             <button onClick={getMoonPhase} disabled={moonLoading}>{moonLoading ? "Fetching..." : "Explore Moon Phase"}</button>
             {moonLoading && (
                 <p>🛰️ Fetching moon phase, please standby...</p>
@@ -184,9 +186,10 @@ export default function AstronomyPage() {
 
             {/* STAR CHART */}
             <h2>🌌 Constellation Explorer</h2>
-            <p>Choose a constellation from the options below to view it's star chart:</p>
-            <p>🔭 <em>Star charts are generated from a fixed observation point in London, UK.</em></p>
-            <select value={constellation} onChange={(event) => setConstellation(event.target.value)}>
+            <p>Choose a constellation from the options below to view it's star chart.</p>
+            <p><small>🔭 Star charts are generated from a fixed observation point in London, UK.</small></p>
+            <label htmlFor="constellation-select">Choose a constellation: </label>
+            <select id="constellation-select" value={constellation} onChange={(event) => setConstellation(event.target.value)}>
                 <option value={"uma"}>Ursa Major</option>
                 <option value={"umi"}>Ursa Minor</option>
                 <option value={"ori"}>Orion</option>
@@ -213,9 +216,12 @@ export default function AstronomyPage() {
             )}
             <br></br>
             <br></br>
-            <p>🔭 <em>Data provided by AstronomyAPI.</em></p>
-            <p><small>🛸 Rover's knowledge has a cutoff date and may not reflect current space news. Always verify with NASA for the latest information.</small></p>
+            <p><small>🔭 Data provided by AstronomyAPI.</small></p>
+            <br></br>
             <Chatbot />
+            <p><small>🛸 Rover's knowledge has a cutoff date and may not reflect current space news. Always verify with NASA for the latest information.</small></p>
+            <br></br>
+            <br></br>
         </div>
     );
 }
