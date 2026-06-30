@@ -14,5 +14,5 @@ export async function sendMessage(prompt, token) {
         throw new Error(data.message || "Something went wrong");
     }
     const data = await response.json();
-    return data.answer;
+    return data;
 }
