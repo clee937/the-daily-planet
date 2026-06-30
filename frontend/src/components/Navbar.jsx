@@ -1,12 +1,27 @@
 import LogoutButton from "../components/LogoutButton";
 import logo from "../assets/the_daily_planet_logo.png";
-import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
 
 function Navbar({ isLoggedIn, setIsLoggedIn }) {
-
     const activeClass = ({ isActive }) => `navbar-link ${isActive ? "active" : ""}`;
+    const location = useLocation();
+    const isProfileActive = location.pathname === "/profile" || location.pathname === "/favourites";
+
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
 
     return (
         <nav className="navbar">
@@ -21,9 +36,35 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                             <NavLink to="/astronomy" className={activeClass}>Visible Objects</NavLink>
                             <NavLink to="/profile" className={activeClass}>My Profile</NavLink>
                         </div>
-                        <div className="navbar-right">
-                            <LogoutButton setIsLoggedIn={setIsLoggedIn}/>
+                    <div className="navbar-right">
+                        <div className="profile-dropdown" ref={dropdownRef}>
+                            <button
+                                className={`profile-button navbar-link ${isProfileActive ? "active" : ""}`}
+                                onClick={() => setDropdownOpen((prev) => !prev)}
+                            >
+                                Profile ▾
+                            </button>
+                            {dropdownOpen && (
+                                <div className="dropdown-menu">
+                                    <NavLink
+                                        to="/favourites"
+                                        className={activeClass}
+                                        onClick={() => setDropdownOpen(false)}
+                                    >
+                                        Favourites
+                                    </NavLink>
+                                    <NavLink
+                                        to="/profile"
+                                        className={activeClass}
+                                        onClick={() => setDropdownOpen(false)}
+                                    >
+                                        Settings
+                                    </NavLink>
+                                </div>
+                            )}
+                            <LogoutButton setIsLoggedIn={setIsLoggedIn} />
                         </div>
+                    </div>
                     </>
                 ) : (
                     <>
