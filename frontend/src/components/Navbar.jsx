@@ -34,7 +34,6 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                             <NavLink to="/" className={activeClass}>Home</NavLink>
                             <NavLink to="/iss" className={activeClass}>ISS</NavLink>
                             <NavLink to="/astronomy" className={activeClass}>Visible Objects</NavLink>
-                            <NavLink to="/profile" className={activeClass}>My Profile</NavLink>
                         </div>
                     <div className="navbar-right">
                         <div className="profile-dropdown" ref={dropdownRef}>
