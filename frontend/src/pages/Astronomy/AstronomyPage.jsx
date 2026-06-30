@@ -174,7 +174,7 @@ export default function AstronomyPage() {
             <input id="moon-date" type="date" value={moonDate} onChange={(event) => setMoonDate(event.target.value)}/>
             <button onClick={getMoonPhase} disabled={moonLoading}>{moonLoading ? "Fetching..." : "Explore Moon Phase"}</button>
             {moonLoading && (
-                <p>🛰️ Fetching moon phase, please standby...</p>
+                <p>🛰️ Fetching Moon phase, please standby...</p>
             )}
             <br></br>
             <br></br>
