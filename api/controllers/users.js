@@ -106,7 +106,7 @@ async function destroy(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(201).json({
+    res.status(200).json({
       message: "User deleted",
       deletedUser: user
     });
