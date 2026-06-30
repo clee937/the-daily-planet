@@ -106,7 +106,7 @@ async function destroy(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(201).json({
+    res.status(200).json({
       message: "User deleted",
       deletedUser: user
     });
@@ -117,11 +117,23 @@ async function destroy(req, res) {
   }
 }
 
+async function checkEmail(req, res) {
+    try {
+        const { email } = req.query;
+        const existing = await User.findOne({ email });
+        res.status(200).json({ taken: !!existing });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: "Something went wrong" });
+    }
+}
+
 const UsersController = {
   create,
   update,
   destroy,
-  getUser
+  getUser,
+  checkEmail
 };
 
 module.exports = UsersController;
