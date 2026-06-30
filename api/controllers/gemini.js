@@ -23,7 +23,13 @@ async function chatWithAI(req, res) {
         const answer = await askGemini(prompt);
         user.aiMessageCount++;
         await user.save();
-        res.json({ answer });
+        res.json({
+            answer,
+            messageLimit: MESSAGE_LIMIT,
+            messagesUsed: user.aiMessageCount,
+            messagesRemaining: MESSAGE_LIMIT - user.aiMessageCount,
+            minutesUntilReset: Math.ceil((RESET_AFTER_MS - (now - user.aiWindowStart.getTime())) / 60000)
+        });
     } catch (error) {
         res.status(500).json({
             error: error.message,

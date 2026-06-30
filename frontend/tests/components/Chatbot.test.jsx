@@ -63,7 +63,10 @@ describe("Chatbot", () => {
 
     it("shows Rover's reply after a successful response", async () => {
         localStorage.setItem("token", "fake-token");
-        sendMessage.mockResolvedValue("A black hole is a region of spacetime!");
+        sendMessage.mockResolvedValue({
+            answer: "A black hole is a region of spacetime!",
+            messagesRemaining: 9
+        });
         renderChatbot();
         const input = screen.getByPlaceholderText("Ask Rover about space...");
         fireEvent.change(input, { target: { value: "What is a black hole?" } });
