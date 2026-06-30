@@ -3,13 +3,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 3rem;
-    background-color: #0a0f1e;
+    padding: 0.75rem 1.5rem;
+    background-color: #0C151E;
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #33455A;
     position: sticky;
     top: 0;
     z-index: 1000;
+    font-family: 'SF Mono', 'Roboto Mono', ui-monospace, monospace;
 }
 
 /* Logo container */
@@ -20,7 +21,7 @@
 }
 
 .navbar-logo {
-    height: 60px;
+    height: 48px;
     width: auto;
     cursor: pointer;
     display: block;
@@ -29,54 +30,48 @@
 /* Centre link container */
 .navbar-centre {
     display: flex;
-    gap: 2rem;
+    gap: 0.5rem;
 }
 
 /* RHS container */
 .navbar-right {
     display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
+/* Shared link + logout button styling */
+.navbar-link,
 .navbar-right button {
     background: transparent;
     border: none;
     text-decoration: none;
-    color: #EBDED0;
-    font-weight: 500;
-    cursor: pointer;
-    font-size: inherit;
-    margin-left: 16px;
-}
-
-.navbar-link {
-    text-decoration: none;
-    color: #EBDED0;
-    font-weight: 500;
+    color: #C2D0DC;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 6px;
     cursor: pointer;
 }
 
-.navbar-link:hover {
-    color: #ebded09e;
-    text-decoration: none;
+.navbar-link:hover,
+.navbar-right button:hover {
+    color: #FFFFFF;
 }
 
+/* Active page — green fill, dark text */
 .navbar-link.active {
-    font-weight: bold;
-    text-decoration: underline;
+    background: #4DF5A6;
+    color: #04140C;
+    font-weight: 500;
+    text-decoration: none;
 }
 
-.profile-dropdown {
-    position: relative;
-}
-
-.dropdown-menu {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: #0a0f1e;
-    padding: 0.5rem;
-    z-index: 100;
-    gap: 0.5rem;
+/* Visible keyboard focus for accessibility */
+.navbar-link:focus-visible,
+.navbar-right button:focus-visible {
+    outline: 2px solid #7FE8FF;
+    outline-offset: 2px;
 }
