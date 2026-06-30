@@ -1,0 +1,30 @@
+.astronomy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.astronomy-card {
+    background: white;
+    border: 1px solid darkgrey;
+    padding: 20px;
+}
+
+.astronomy-card h3 {
+    margin: 10px;
+    font-size: 1.25rem;
+    color: black;
+}
+
+.card-details {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: black;
+}
+
+.superman {
+    font-size: 0.75rem;
+    color: darkgrey;
+}

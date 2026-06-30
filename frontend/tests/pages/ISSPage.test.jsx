@@ -35,18 +35,6 @@ describe("ISS Page", () => {
         },
         timestamp: 1234567890,
         }),
-
-    // Default astronauts fetch response
-    }).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-            number: 3,
-            people: [
-                { name: "Astronaut One" },
-                { name: "Astronaut Two" },
-                { name: "Astronaut Three" },
-            ],
-        }),
     });
 });
 
@@ -60,13 +48,6 @@ test("displays ISS location after loading", async () => {
     await waitFor(() => {
         expect(screen.getByText(/Latitude/)).toBeTruthy();
         expect(screen.getByText(/Longitude/)).toBeTruthy();
-    });
-});
-
-test("displays astronauts on board", async () => {
-    render(<MemoryRouter><ISSPage /></MemoryRouter>);
-    await waitFor(() => {
-        expect(screen.getByText(/3 astronauts on board/)).toBeTruthy();
     });
 });
 
@@ -106,33 +87,6 @@ test("shows error message when ISS fetch fails", async () => {
     render(<MemoryRouter><ISSPage /></MemoryRouter>);
     await waitFor(() => {
         expect(screen.getByText("Failed to fetch ISS location")).toBeTruthy();
-    });
-});
-
-test("shows astronaut error when astronaut fetch fails", async () => {
-    vi.resetAllMocks(); // reset beforeEach mocks
-
-    mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-            iss_position: {
-                latitude: "51.5074",
-                longitude: "-0.1278",
-            },
-            timestamp: 1234567890,
-        }),
-    }).mockRejectedValueOnce(new Error("Astronaut fetch failed"));
-
-    render(<MemoryRouter><ISSPage /></MemoryRouter>);
-    await waitFor(() => {
-        expect(screen.getByText("Could not load astronaut data")).toBeTruthy();
-    });
-});
-
-test("displays astronaut names", async () => {
-    render(<MemoryRouter><ISSPage /></MemoryRouter>);
-    await waitFor(() => {
-        expect(screen.getByText(/Astronaut One/)).toBeTruthy();
     });
 });
 

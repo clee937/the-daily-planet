@@ -51,6 +51,10 @@ describe("Navbar Component", () => {
             renderNavbar();
             expect(screen.getByRole("link", { name: /iss/i })).toBeTruthy();
         });
+        it("shows the Visible Objects link", () => {
+            renderNavbar();
+            expect(screen.getByRole("link", { name: /visible objects/i })).toBeTruthy();
+        });
     });
 
     describe("when logged in", () => {
@@ -77,6 +81,10 @@ describe("Navbar Component", () => {
         it("shows the ISS link", () => {
             renderNavbar(true);
             expect(screen.getByRole("link", { name: /iss/i })).toBeTruthy();
+        });
+        it("shows the Visible Objects link", () => {
+            renderNavbar();
+            expect(screen.getByRole("link", { name: /visible objects/i })).toBeTruthy();
         });
     });
 
