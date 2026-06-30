@@ -225,6 +225,133 @@ body {
     color: #FFFFFF;
 }
 
+/* ---------- Favourites page ---------- */
+.favourites-page {
+    padding: 24px 18px;
+}
+.favourites-page h2 {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    color: var(--text);
+    margin: 0 0 20px;
+}
+
+/* Grid of favourite cards */
+.favourites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 16px;
+}
+
+/* Each favourite as a HUD panel */
+.favourite-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.favourite-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;       /* keeps images uniform regardless of shape */
+    display: block;
+}
+.favourite-title {
+    font-size: 14px;
+    color: var(--text-body);
+    line-height: 1.5;
+    padding: 12px 14px;
+    margin: 0;
+    flex: 1;                 /* pushes the remove button to the bottom */
+}
+
+/* Remove button — neutral/cautionary, NOT the green save style */
+.favourite-remove {
+    background: transparent;
+    color: var(--text-label);
+    border: none;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    padding: 12px;
+    cursor: pointer;
+}
+.favourite-remove:hover {
+    color: #FF8A8A;          /* turns warning-red on hover */
+    background: rgba(255, 138, 138, 0.08);
+}
+.favourite-remove:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: -2px;
+}
+
+/* ---------- Favourite modal (lightbox) ---------- */
+.favourite-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 11, 17, 0.85);   /* dark dimmed backdrop */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 2000;
+}
+.favourite-modal {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+.favourite-modal-image {
+    width: 100%;
+    border-radius: var(--radius);
+    display: block;
+}
+.favourite-modal-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: var(--text);
+    margin: 16px 0 10px;
+}
+.favourite-modal-explanation {
+    font-size: 14px;
+    color: var(--text-body);
+    line-height: 1.7;
+    margin: 0;
+
+    .favourite-modal-date {
+    font-size: 13px;
+    color: var(--accent);          
+    letter-spacing: 0.06em;
+    margin: 0 0 12px;
+}
+}
+.favourite-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--panel-header);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
+}
+.favourite-modal-close:hover { color: #FF8A8A; }
+
+/* Make the grid images show they're clickable */
+.favourite-image { cursor: pointer; }
+
 /* ---------- Rover chat ---------- */
 .chat-panel {
     border: 1px solid var(--border);

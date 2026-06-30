@@ -66,7 +66,7 @@ export function Chatbot() {
                     )
                 ))}
 
-                {loading && <div className="chat-rover"><span className="name">ROVER:</span> thinking... 🚀</div>}
+                {loading && <div className="chat-rover"><span className="name">ROVER:</span> Rover is thinking... 🚀</div>}
             </div>
 
             <form onSubmit={handleSubmit} className="chat-input">
