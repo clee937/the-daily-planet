@@ -63,7 +63,7 @@ function FavouriteButton({ picture }) {
 return (
     <div className="favourite">
         <button
-            className="favourite-button"
+            className="hud-button"
             onClick={handleSave}
             disabled={saving || saved}
             data-testid="favourite-button"

@@ -1,0 +1,289 @@
+/* ============================================================
+    THE DAILY PLANET — Mission Control / HUD theme
+    Accessible dark theme. All text colours chosen to meet
+    WCAG AA (4.5:1) on their panel backgrounds.
+    Tweak the palette in :root and it cascades everywhere.
+   ============================================================ */
+
+:root {
+  /* --- Backgrounds (darkest to lightest) --- */
+    --bg:            #060B11;   /* page background */
+    --panel:         #0A121B;   /* standard panel */
+    --panel-header:  #0C151E;   /* top status bar */
+
+  /* --- Borders --- */
+    --border:        #33455A;   /* visible hairline — defines panels */
+
+  /* --- Text (all AA-safe on --panel) --- */
+    --text:          #FFFFFF;   /* headlines, key values */
+    --text-body:     #D5E0EA;   /* body copy */
+    --text-label:    #A6B8C8;   /* labels, captions, secondary readouts */
+
+  /* --- Accents --- */
+    --accent:        #4DF5A6;   /* signal green — status, active nav, button */
+    --accent-ink:    #04140C;   /* dark text that sits ON the green */
+    --cyan:          #7FE8FF;   /* user chat messages */
+
+  /* --- Rover "data insight" panel (green-tinted) --- */
+    --rover-bg:      #111907;
+    --rover-border:  #4A6320;
+    --rover-label:   #C3E86A;
+    --rover-text:    #E6F2CE;
+
+  /* --- Type --- */
+    --font-mono:     'SF Mono', 'Roboto Mono', ui-monospace, monospace;
+    --font-serif:    Georgia, 'Times New Roman', serif;  /* headlines only */
+
+    --radius:        8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-body);
+    font-family: var(--font-mono);
+    line-height: 1.7;
+}
+
+/* ---------- Top status bar ---------- */
+.hud-statusbar {
+    background: var(--panel-header);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.hud-brand {
+    font-size: 12px;
+    color: var(--text);
+    letter-spacing: 0.14em;
+}
+.hud-brand .sub {
+    font-size: 10px;
+    color: var(--text-label);
+    letter-spacing: 0.1em;
+    margin-left: 8px;
+}
+.hud-status {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+}
+/* The glowing status dot */
+.hud-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* ---------- Nav ---------- */
+.hud-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+}
+.hud-nav a {
+    padding: 9px 16px;
+    color: var(--text-label);
+    text-decoration: none;
+    border-right: 1px solid var(--border);
+}
+.hud-nav a:hover { color: var(--text); }
+/* Active page — green fill, dark text (high contrast, the safe direction) */
+.hud-nav a.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 500;
+}
+/* Keyboard focus — visible ring for accessibility */
+.hud-nav a:focus-visible,
+.hud-button:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+}
+
+/* ---------- Panels ---------- */
+.hud-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+}
+.hud-panel-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-label);
+    letter-spacing: 0.1em;
+}
+.hud-panel-header .date { color: var(--accent); }
+.hud-panel-body { padding: 14px; }
+
+/* ---------- APOD headline (serif against the mono UI) ---------- */
+.apod-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1.2;
+    margin: 0 0 10px;
+}
+.apod-explanation {
+    font-size: 13px;
+    color: var(--text-body);
+    line-height: 1.7;
+    margin: 0;
+}
+.apod-credit {
+    font-size: 11px;
+    color: var(--text-label);
+    margin-top: 8px;
+}
+
+/* ---------- Rover "data insight" fact panel ---------- */
+.rover-panel {
+    border: 1px solid var(--rover-border);
+    border-radius: var(--radius);
+    background: var(--rover-bg);
+    padding: 12px;
+}
+.rover-label {
+    font-size: 10px;
+    color: var(--rover-label);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+}
+.rover-fact {
+    font-size: 12px;
+    color: var(--rover-text);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ---------- Telemetry readout ---------- */
+.telemetry-label {
+    font-size: 10px;
+    color: var(--text-label);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+}
+.telemetry-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-label);
+    margin-bottom: 7px;
+}
+.telemetry-row .value { color: var(--text); }
+.telemetry-row .value.signal { color: var(--accent); }
+
+/* ---------- Save button (green fill, dark text) ---------- */
+.hud-button {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 12px 0;
+    width: 100%;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+.hud-button:hover { filter: brightness(1.08); }
+.hud-button:active { transform: scale(0.98); }
+
+/* ---------- Rover chat ---------- */
+.chat-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+}
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-label);
+    letter-spacing: 0.1em;
+}
+.chat-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.chat-user {
+    font-size: 12px;
+    color: var(--cyan);
+}
+.chat-user .prompt { color: var(--text-label); }
+.chat-rover {
+    font-size: 12px;
+    color: var(--rover-text);
+    line-height: 1.6;
+}
+.chat-rover .name { color: var(--rover-label); }
+.chat-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+}
+.chat-input .caret { color: var(--accent); font-size: 13px; }
+.chat-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-body);
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+.chat-input input::placeholder { color: var(--text-label); }
+.chat-input button {
+    background: transparent;
+    border: 1px solid #4A6478;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ---------- Layout grid ---------- */
+.hud-main {
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 14px;
+}
+.hud-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ---------- Responsive: stack on small screens ---------- */
+@media (max-width: 700px) {
+    .hud-main { grid-template-columns: 1fr; }
+    .hud-nav { flex-wrap: wrap; }
+}
+
+/* ---------- Respect reduced-motion preference ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
