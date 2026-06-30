@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Chatbot } from "../../components/Chatbot";
 import "./AstronomyPage.css";
 
 export default function AstronomyPage() {
@@ -141,7 +142,7 @@ export default function AstronomyPage() {
             {/* VISIBLE OBJECTS */}
             <h2>✨ What's in the Sky Tonight?</h2>
             <p className="superman"><em>'Is it a bird? Is it a plane?'</em></p>
-            <p>Use your current location to discover what's visible in your sky tonight.</p>
+            <p>Use your current location to discover what will be visible in the night sky on a day of your choice:</p>
             <p>🔭 <em>Visible objects calculated for 22:00 local time.</em></p>
             <input type="date" value={visibleObjectsDate} onChange={(event) => setVisibleObjectsDate(event.target.value)}/>
             <br></br>
@@ -167,7 +168,7 @@ export default function AstronomyPage() {
 
             {/* MOON PHASE */}
             <h2>🌒 Moon Phase Explorer</h2>
-            <p>Use your current location to see what phase the moon will be in on a day of your choice.</p>
+            <p>Use your current location to discover what phase the moon will be in on a day of your choice:</p>
             <input type="date" value={moonDate} onChange={(event) => setMoonDate(event.target.value)}/>
             <button onClick={getMoonPhase} disabled={moonLoading}>{moonLoading ? "Fetching..." : "Explore Moon Phase"}</button>
             {moonLoading && (
@@ -183,7 +184,7 @@ export default function AstronomyPage() {
 
             {/* STAR CHART */}
             <h2>🌌 Constellation Explorer</h2>
-            <p>Choose a constellation from the options below to view it's star chart.</p>
+            <p>Choose a constellation from the options below to view it's star chart:</p>
             <p>🔭 <em>Star charts are generated from a fixed observation point in London, UK.</em></p>
             <select value={constellation} onChange={(event) => setConstellation(event.target.value)}>
                 <option value={"uma"}>Ursa Major</option>
@@ -213,6 +214,8 @@ export default function AstronomyPage() {
             <br></br>
             <br></br>
             <p>🔭 <em>Data provided by AstronomyAPI.</em></p>
+            <p><small>🛸 Rover's knowledge has a cutoff date and may not reflect current space news. Always verify with NASA for the latest information.</small></p>
+            <Chatbot />
         </div>
     );
 }

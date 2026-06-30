@@ -18,6 +18,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                         <div className="navbar-centre">
                             <NavLink to="/" className={activeClass}>Home</NavLink>
                             <NavLink to="/iss" className={activeClass}>ISS</NavLink>
+                            <NavLink to="/astronomy" className={activeClass}>Visible Objects</NavLink>
                             <NavLink to="/profile" className={activeClass}>My Profile</NavLink>
                         </div>
                         <div className="navbar-right">
@@ -29,6 +30,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                         <div className="navbar-centre">
                             <NavLink to="/" className={activeClass}>Home</NavLink>
                             <NavLink to="/iss" className={activeClass}>ISS</NavLink>
+                            <NavLink to="/astronomy" className={activeClass}>Visible Objects</NavLink>
                         </div>
                         <div className="navbar-right">
                             <NavLink to="/login" className={activeClass}>Log In</NavLink>
