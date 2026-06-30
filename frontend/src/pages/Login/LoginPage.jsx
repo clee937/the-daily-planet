@@ -32,24 +32,37 @@ export function LoginPage() {
 
   return (
     <>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <input role="submit-button" id="submit" type="submit" value="Submit" />
-      </form>
+      <div className="auth-page">
+        <div className="auth-card">
+        <h2>Login</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="email">Email:</label>
+              <input
+                id="email"
+                type="text"
+                value={email}
+                onChange={handleEmailChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password:</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+            </div>
+            <input className="hud-button" role="submit-button" id="submit" type="submit" value="Submit" />
+          </form>
+            <p className="signup-text">Dont have an account? Sign up <a href="/signup">here</a></p>
+        </div>
+      </div>
+      <footer className="hud-footer">
+        <span>THE DAILY PLANET</span>
+        <span>// BUILT BY [your team name] · 2026</span>
+      </footer>
     </>
   );
 }

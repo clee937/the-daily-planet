@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { signup } from "../../services/authentication";
+import "../../Hud.css";
 
 export function SignupPage() {
   const [email, setEmail] = useState("");
@@ -57,33 +58,48 @@ export function SignupPage() {
 
   return (
     <>
-      <h2>Signup</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username:</label>
-        <input
-          id="username"
-          type="text"
-          value={username}
-          onChange={handleUsernameChange}
-        />
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <label htmlFor="password">Password:</label>
-        <input
-          placeholder="Password"
-          id="password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <input role="submit-button" id="submit" type="submit" value="Submit" />
-      </form>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h2>Sign Up</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Username:</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={handleUsernameChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              id="email"
+              type="text"
+              value={email}
+              onChange={handleEmailChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input
+              placeholder="Password"
+              id="password"
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          <input className="hud-button" role="submit-button" id="submit" type="submit" value="Submit" />
+        </form>
+        <p className="signup-text">Dont have an account? Log in <a href="/login">here</a></p>
+      </div>
+    </div>
+    <footer className="hud-footer">
+        <span>THE DAILY PLANET</span>
+        <span>// BUILT BY [your team name] · 2026</span>
+    </footer>
     </>
   );
 }
