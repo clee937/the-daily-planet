@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getUser, editUser, deleteUser, checkEmail } from "../../services/users";
 import { toast } from "react-toastify";
 import { useOutletContext } from "react-router-dom";
+import "../../Hud.css";
 
 export function ProfilePage() {
     const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -19,16 +20,15 @@ export function ProfilePage() {
     const noop = () => {};
     const setIsLoggedIn = outletContext?.setIsLoggedIn ?? noop;
 
-    // Load user details when page opens
     useEffect(() => {
         if (!token) {
-        navigate("/login");
-        return;
+            navigate("/login");
+            return;
         }
         getUser(token)
-        .then((data) => setUser(data.user))
-        .catch((err) => console.error(err));
-    },[navigate, token]);
+            .then((data) => setUser(data.user))
+            .catch((err) => console.error(err));
+    }, [navigate, token]);
 
     async function handlePasswordEdit(event) {
         event.preventDefault();
@@ -36,13 +36,10 @@ export function ProfilePage() {
             setMessage("Password must be at least 8 characters!");
             return;
         }
-
         if (!/[!@#$%^&*]/.test(password)) {
             setMessage("Password must contain at least one special character (! @ # $ % ^ & *)");
             return;
         }
-
-        // Check passwords match before submitting
         if (password !== confirmPassword) {
             setMessage("Passwords do not match!");
             return;
@@ -61,7 +58,6 @@ export function ProfilePage() {
 
     async function handleEmailEdit(event) {
         event.preventDefault();
-        
         try {
             const isTaken = await checkEmail(email);
             if (isTaken) {
@@ -81,7 +77,6 @@ export function ProfilePage() {
     }
 
     async function handleDelete() {
-        // need a warning to show (not an alert but an inline error message)
         try {
             await deleteUser(token);
             localStorage.removeItem("token");
@@ -95,90 +90,116 @@ export function ProfilePage() {
     }
 
     return (
-        <>
-            <h2>Your Profile</h2>
+        <section className="profile-page">
+            <h2 className="profile-title">Your Profile</h2>
 
-            {message && <p>{message}</p>}
+            {message && <p className="profile-message">{message}</p>}
 
             {user && (
-                <div>
-                    <p>Username: {user.username}</p>
+                <div className="profile-panel hud-panel">
+                    {/* Username */}
+                    <div className="profile-row">
+                        <div className="profile-field-info">
+                            <span className="profile-label">Username</span>
+                            <span className="profile-value">{user.username}</span>
+                        </div>
+                    </div>
 
-                    {/* Email field */}
-                    <div>
-                        {isEditingEmail ? (
-                            <>
-                                <p>Email: {user.email}</p>
-                                <form onSubmit={handleEmailEdit}>
+                    {/* Email */}
+                    {isEditingEmail ? (
+                        <div className="profile-row profile-row-editing">
+                            <div className="profile-field-info profile-field-full">
+                                <span className="profile-label">Email</span>
+                                <span className="profile-value">{user.email}</span>
+                                <form onSubmit={handleEmailEdit} className="profile-form">
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
+                                        className="profile-input"
+                                        placeholder="New email"
                                     />
-                                    <button type="submit">Save</button>
-                                    <button type="button" onClick={() => {
-                                        setIsEditingEmail(false);
-                                        setEmail("");
-                                        setMessage("");
-                                    }}>Cancel</button>
+                                    <div className="profile-buttons">
+                                        <button type="submit" className="hud-button">Save</button>
+                                        <button type="button" className="hud-button-secondary" onClick={() => {
+                                            setIsEditingEmail(false);
+                                            setEmail("");
+                                            setMessage("");
+                                        }}>Cancel</button>
+                                    </div>
                                 </form>
-                            </>
-                        ) : (
-                            <>
-                                <p>Email: {user.email}</p>
-                                <button onClick={() => setIsEditingEmail(true)}>Edit</button>
-                            </>
-                        )}
-                    </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="profile-row">
+                            <div className="profile-field-info">
+                                <span className="profile-label">Email</span>
+                                <span className="profile-value">{user.email}</span>
+                            </div>
+                            <button className="hud-button-secondary" onClick={() => setIsEditingEmail(true)}>Edit</button>
+                        </div>
+                    )}
 
-                    {/* Password field */}
-                    <div>
-                        {isEditingPassword ? (
-                            <>
-                                <p>Password: 🌑🌒🌓🌔🌕🌖🌗🌘🌑</p>
-                                <form onSubmit={handlePasswordEdit}>
-                                    <label htmlFor="password">New Password:</label>
+                    {/* Password */}
+                    {isEditingPassword ? (
+                        <div className="profile-row profile-row-editing">
+                            <div className="profile-field-info profile-field-full">
+                                <span className="profile-label">Password</span>
+                                <span className="profile-value">🌑🌒🌓🌔🌕🌖🌗🌘🌑</span>
+                                <form onSubmit={handlePasswordEdit} className="profile-form">
+                                    <label htmlFor="password" className="profile-sublabel">New Password</label>
                                     <input
                                         id="password"
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
+                                        className="profile-input"
                                     />
-                                    <label htmlFor="confirmPassword">Confirm Password:</label>
+                                    <label htmlFor="confirmPassword" className="profile-sublabel">Confirm Password</label>
                                     <input
                                         id="confirmPassword"
                                         type="password"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="profile-input"
                                     />
-                                    <button type="submit">Save</button>
-                                    <button type="button" onClick={() => {
-                                        setIsEditingPassword(false);
-                                        setPassword("");
-                                        setConfirmPassword("");
-                                        setMessage("");
-                                    }}>Cancel</button>
+                                    <div className="profile-buttons">
+                                        <button type="submit" className="hud-button">Save</button>
+                                        <button type="button" className="hud-button-secondary" onClick={() => {
+                                            setIsEditingPassword(false);
+                                            setPassword("");
+                                            setConfirmPassword("");
+                                            setMessage("");
+                                        }}>Cancel</button>
+                                    </div>
                                 </form>
-                            </>
-                        ) : (
-                            <>
-                                <p>Password:  🌑🌒🌓🌔🌕🌖🌗🌘🌑</p>
-                                <button onClick={() => setIsEditingPassword(true)}>Edit</button>
-                            </>
-                        )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="profile-row">
+                            <div className="profile-field-info">
+                                <span className="profile-label">Password</span>
+                                <span className="profile-value">🌑🌒🌓🌔🌕🌖🌗🌘🌑</span>
+                            </div>
+                            <button className="hud-button-secondary" onClick={() => setIsEditingPassword(true)}>Edit</button>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <div className="profile-danger">
+                <button className="hud-button-danger" onClick={() => setShowDeleteConfirm(true)} disabled={showDeleteConfirm}>Delete Account</button>
+
+                {showDeleteConfirm && (
+                    <div className="profile-confirm">
+                        <p>Are you sure you want to delete your account? You will lose your favourites.</p>
+                        <div className="profile-buttons">
+                            <button className="hud-button-danger" onClick={handleDelete}>Yes, delete</button>
+                            <button className="hud-button-secondary" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
+                        </div>
                     </div>
-                </div>
-            )}
-
-            <button onClick={() => setShowDeleteConfirm(true)} disabled={showDeleteConfirm}>Delete Account</button>
-
-            {showDeleteConfirm && (
-                <div>
-                    <p>Are you sure you want to delete your account? You will lose your APOD favourites.</p>
-                    <button onClick={handleDelete}>Yes</button>
-                    <button onClick={() => setShowDeleteConfirm(false)}>No</button>
-                </div>
-            )}
-        </>
+                )}
+            </div>
+        </section>
     );
 }

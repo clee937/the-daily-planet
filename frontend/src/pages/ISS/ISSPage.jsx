@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Chatbot } from "../../components/Chatbot";
+import "../../Hud.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -37,68 +38,101 @@ export function ISSPage() {
         }
     }, []);
 
-        useEffect(() => {
-            fetchLocation();
-            const interval = setInterval(() => fetchLocation(false), 10000);
+    useEffect(() => {
+        fetchLocation();
+        const interval = setInterval(() => fetchLocation(false), 10000);
 
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setUserLocation({
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                    });
-                },
-                (err) => {
-                    console.error("Could not get user location", err);
-                }
-            );
-            
-            return () => clearInterval(interval);
-        },      []);
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setUserLocation({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                });
+            },
+            (err) => {
+                console.error("Could not get user location", err);
+            }
+        );
 
-        if (loading) return <p>Locating the ISS...</p>;
-        if (error) return <p>{error}</p>;
-        if (!location) return null;
+        return () => clearInterval(interval);
+    }, []);
 
-        return (
-            <div>
-                <h1>ISS Live Tracker</h1>
-                <p>Latitude: {location.latitude}</p>
-                <p>Longitude: {location.longitude}</p>
-                <button onClick={fetchLocation}>Refresh Location</button>
+    if (loading) return <p className="iss-status">Locating the ISS...</p>;
+    if (error) return <p className="iss-status">{error}</p>;
+    if (!location) return null;
 
-                {userLocation ? (
-                    <p>📍 You are approximately {calculateDistance(
-                        userLocation.latitude,
-                        userLocation.longitude,
-                        location.latitude,
-                        location.longitude
-                    )} miles from the ISS!</p>
-                ) : (
-                    <p>📍 Share your location to see how far you are from the ISS!</p>
-                )}
+    return (
+        <div className="iss-page">
+            <div className="iss-main">
+                <div className="hud-panel iss-tracker">
+                    <div className="hud-panel-header">
+                        <span>FEED 02 · ISS LIVE TRACKER</span>
+                        <span className="date">● LIVE</span>
+                    </div>
 
-                <MapContainer
-                    center={[location.latitude, location.longitude]}
-                    zoom={3}
-                    style={{ height: "500px", width: "100%" }}
-                >
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="© OpenStreetMap contributors"
-                />
-                    <Marker position={[location.latitude, location.longitude]}>
-                        <Popup>The ISS is here! 🛸</Popup>
-                    </Marker>
-                    {userLocation && (
-                        <Marker position={[userLocation.latitude, userLocation.longitude]}>
-                            <Popup>You are here! 📍</Popup>
-                        </Marker>
-                    )}
-                </MapContainer>
-                <p><small>🛸 Rover's knowledge has a cutoff date and may not reflect current ISS crew or recent missions. Always verify with NASA for the latest information.</small></p>
-                <Chatbot />
+                    <div className="hud-panel-body">
+                        <div className="telemetry-panel">
+                            <div className="telemetry-row">
+                                <span>LATITUDE</span>
+                                <span className="value">{location.latitude}</span>
+                            </div>
+                            <div className="telemetry-row">
+                                <span>LONGITUDE</span>
+                                <span className="value">{location.longitude}</span>
+                            </div>
+                            {userLocation ? (
+                                <div className="telemetry-row">
+                                    <span>DISTANCE FROM YOU</span>
+                                    <span className="value signal">
+                                        {calculateDistance(
+                                            userLocation.latitude,
+                                            userLocation.longitude,
+                                            location.latitude,
+                                            location.longitude
+                                        )} mi
+                                    </span>
+                                </div>
+                            ) : (
+                                <p className="iss-location-prompt">
+                                    📍 Share your location to see how far you are from the ISS!
+                                </p>
+                            )}
+                        </div>
+
+                        <button className="hud-button" onClick={fetchLocation}>
+                            ⟳ Refresh Location
+                        </button>
+
+<div className="iss-map">
+                            <MapContainer
+                                center={[location.latitude, location.longitude]}
+                                zoom={3}
+                                style={{ height: "400px", width: "100%" }}
+                            >
+                                <TileLayer
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    attribution="© OpenStreetMap contributors"
+                                />
+                                <Marker position={[location.latitude, location.longitude]}>
+                                    <Popup>The ISS is here! 🛸</Popup>
+                                </Marker>
+                                {userLocation && (
+                                    <Marker position={[userLocation.latitude, userLocation.longitude]}>
+                                        <Popup>You are here! 📍</Popup>
+                                    </Marker>
+                                )}
+                            </MapContainer>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="hud-sidebar">
+                    <Chatbot />
+                    <p className="iss-disclaimer">
+                        🛸 Rover's knowledge has a cutoff date and may not reflect current ISS crew or recent missions. Always verify with NASA for the latest information.
+                    </p>
+                </div>
             </div>
+        </div>
     );
 }
-

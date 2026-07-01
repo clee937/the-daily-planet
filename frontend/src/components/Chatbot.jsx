@@ -110,31 +110,42 @@ export function Chatbot() {
     }
 
     return (
-        <div>
-            {error && (
-                <div>
-                    <p style={{ color: "red" }}>
+        <div className="chat-panel">
+            <div className="chat-header">
+                <span className="hud-dot"></span>
+                <span>ROVER // COMMS CHANNEL OPEN</span>
+            </div>
+
+            <div className="chat-body">
+                {error && (
+                    <p className="chat-error">
                         {error}
                         {error === "You must be logged in to use this feature." && (
                             <> <Link to="/signup">Sign up</Link> or <Link to="/login">Log in</Link></>
                         )}
                     </p>
-                </div>
-            )}
-            <div className="message-list">
+                )}
+
                 {messages.map((message, i) => (
-                <div key={i} className={`message ${message.role}`}>
-                    <p>{message.role === "user" ? "You" : "Rover"}:</p> {message.text}
-                </div>
+                    message.role === "user" ? (
+                        <div key={i} className="chat-user">
+                            <span className="prompt">&gt;</span> {message.text}
+                        </div>
+                    ) : (
+                        <div key={i} className="chat-rover">
+                            <span className="name">ROVER:</span> {message.text}
+                        </div>
+                    )
                 ))}
-                {loading && <p>Rover is thinking... 🚀</p>}
+
+                {loading && <div className="chat-rover"><span className="name">ROVER:</span> Rover is thinking... 🚀</div>}
             </div>
             {isLoggedIn && (messagesRemaining > 0 ? (
                 <p><small>{messagesRemaining} of 10 messages remaining this hour.</small></p>
             ) : (
                 <p className="warning"><small><strong>You've reached your hourly limit of 10 messages. Please try again in {minutesUntilReset} minute{minutesUntilReset !== 1 ? "s" : ""}.</strong></small></p>
             ))}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}className="chat-input">
                 <input
                     value={prompt}
                     onChange={(event) => {
@@ -142,6 +153,7 @@ export function Chatbot() {
                         setError(null);
                     }}
                     placeholder="Ask Rover about space..."
+                    aria-label="Ask Rover a question"
                 />
                 <button type="submit" disabled={loading || messagesRemaining === 0}>
                     Send
@@ -150,4 +162,3 @@ export function Chatbot() {
         </div>
     )
 }
-
