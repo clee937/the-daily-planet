@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import AstronomyPage from "../../src/pages/Astronomy/AstronomyPage";
 
 describe("Astronomy Page", () => {
     it("renders astronomy page heading", () => {
-        render(<AstronomyPage />);
+        render(<MemoryRouter><AstronomyPage /></MemoryRouter>);
 
         expect(
             screen.getByText(/what's in the sky tonight/i)
@@ -11,7 +12,7 @@ describe("Astronomy Page", () => {
     });
 
     it("renders moon phase explorer section", () => {
-        render(<AstronomyPage />);
+        render(<MemoryRouter><AstronomyPage /></MemoryRouter>);
 
         expect(
             screen.getByText(/moon phase explorer/i)
@@ -19,7 +20,7 @@ describe("Astronomy Page", () => {
     });
 
     it("renders constellation explorer section", () => {
-        render(<AstronomyPage />);
+        render(<MemoryRouter><AstronomyPage /></MemoryRouter>);
 
         expect(
             screen.getByText(/constellation explorer/i)
@@ -27,7 +28,7 @@ describe("Astronomy Page", () => {
     });
 
     it("renders moon phase button", () => {
-        render(<AstronomyPage />);
+        render(<MemoryRouter><AstronomyPage /></MemoryRouter>);
 
         expect(
             screen.getByRole("button", {
@@ -37,7 +38,7 @@ describe("Astronomy Page", () => {
     });
 
     it("renders star chart button", () => {
-        render(<AstronomyPage />);
+        render(<MemoryRouter><AstronomyPage /></MemoryRouter>);
 
         expect(
             screen.getByRole("button", {

@@ -5,6 +5,7 @@ import { vi } from "vitest";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { login } from "../../src/services/authentication";
 import { toast } from "react-toastify";
+import { MemoryRouter } from "react-router-dom";
 
 import { LoginPage } from "../../src/pages/Login/LoginPage";
 
@@ -51,7 +52,7 @@ describe("Login Page", () => {
   test("allows a user to login", async () => {
     useOutletContext.mockReturnValue({ isLoggedIn: false });
 
-    render(<LoginPage />);
+    render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     await completeLoginForm();
 
@@ -61,7 +62,7 @@ describe("Login Page", () => {
   test("navigates to /login on unsuccessful login", async () => {
     useOutletContext.mockReturnValue({ isLoggedIn: false });
 
-    render(<LoginPage />);
+    render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     login.mockRejectedValue(new Error("Error logging in"));
     const navigateMock = useNavigate();
@@ -75,7 +76,7 @@ describe("Login Page", () => {
     useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
     login.mockResolvedValue("secrettoken123");
 
-    render(<LoginPage />);
+    render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     await completeLoginForm();
 
