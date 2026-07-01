@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -29,16 +30,17 @@ export function FavouritesPage() {
     }, [token]);
 
     async function handleRemove(id) {
-        try {
-            const res = await fetch(`${API_URL}/favourites/${id}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (!res.ok) throw new Error("Could not remove favourite...🚀");
-            setFavourites((current) => current.filter((fav) => fav._id !== id));
-        } catch (err) {
-            setError(err.message);
-        }
+    try {
+        const res = await fetch(`${API_URL}/favourites/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Could not remove favourite...🚀");
+        setFavourites((current) => current.filter((fav) => fav._id !== id));
+        toast.success("Removed from favourites");
+    } catch (err) {
+        setError(err.message);
+    }
     }
 
     if (loading) return <p>Loading your favourites…</p>;

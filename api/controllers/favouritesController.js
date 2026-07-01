@@ -5,8 +5,8 @@ function getUserId(req) {
 }
 
 async function createFavourite(req, res) {
+    const userId = getUserId(req); //moed outside try block
     try {
-        const userId = getUserId(req);
         const { title, imageUrl, explanation, date, source, mediaType, sourceId } = req.body;
 
         if(!title || !imageUrl || !sourceId) {
@@ -27,7 +27,8 @@ async function createFavourite(req, res) {
         res.status(201).json({ favourite });
     } catch (err) {
         if (err.code === 11000) {
-            return res.status(409).json({ error: "Already in your favourites" });
+            const existing = await Favourite.findOne({ user: userId, sourceId: req.body.sourceId });
+            return res.status(409).json({ error: "Already in your favourites", favourite: existing });
         }
         console.error("createFavourite error", err.message);
         res.status(500).json({ error: "Could not save favourite" });

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUser, editUser, deleteUser, checkEmail } from "../../services/users";
+import { toast } from "react-toastify";
 
 export function ProfilePage() {
     const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -45,6 +46,7 @@ export function ProfilePage() {
         try {
             await editUser(token, { password });
             setMessage("Password updated successfully!");
+            toast.success("Password updated successfully! ✏️")
         } catch (err) {
             setMessage("Something went wrong. Please try again.");
             console.error(err);
@@ -65,6 +67,7 @@ export function ProfilePage() {
             await editUser(token, { email });
             setUser((prev) => ({ ...prev, email }));
             setMessage("Email updated successfully!");
+            toast.success("Email updated successfully! ✏️");
         } catch (err) {
             setMessage("Something went wrong. Please try again.");
             console.error(err);
@@ -78,6 +81,7 @@ export function ProfilePage() {
         try {
             await deleteUser(token);
             localStorage.removeItem("token");
+            toast.success("Account successfully deleted 👋");
             navigate("/");
         } catch (err) {
             setMessage("Could not delete account. Please try again.");

@@ -4,12 +4,18 @@ import { test, vi } from "vitest";
 import { useNavigate } from "react-router-dom";
 import { getUser, editUser, deleteUser, checkEmail } from "../../src/services/users";
 import { ProfilePage } from "../../src/pages/Profile/ProfilePage";
+import { toast } from "react-toastify";
 
 // Mock useNavigate
 const navigateMock = vi.fn();
 
 vi.mock("react-router-dom", () => ({
   useNavigate: () => navigateMock,
+}));
+
+// Mock toast
+vi.mock("react-toastify", () => ({
+  toast: { success: vi.fn() },
 }));
 
 // Mock the users service
@@ -253,4 +259,79 @@ describe("Profile Page", () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith("token");
     expect(navigateMock).toHaveBeenCalledWith("/");
   });
+
+  test("shows a success toast when updating email", async () => {
+  localStorageMock.getItem.mockReturnValue("token");
+
+  getUser.mockResolvedValue({
+    user: {
+      username: "Buzz",
+      email: "buzz@nasa.gov",
+    },
+  });
+
+  checkEmail.mockResolvedValue(false);
+  editUser.mockResolvedValue({});
+
+  render(<ProfilePage />);
+
+  await screen.findByText("Email: buzz@nasa.gov");
+  await userEvent.click(screen.getAllByText("Edit")[0]);
+  await userEvent.type(screen.getByRole("textbox"), "new@nasa.gov");
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+  await waitFor(() => {
+    expect(toast.success).toHaveBeenCalledWith("Email updated successfully! ✏️");
+  });
+});
+
+test("shows a success toast when deleting account", async () => {
+  localStorageMock.getItem.mockReturnValue("token");
+
+  getUser.mockResolvedValue({
+    user: {
+      username: "Buzz",
+      email: "buzz@nasa.gov",
+    },
+  });
+
+  deleteUser.mockResolvedValue({});
+
+  render(<ProfilePage />);
+
+  await screen.findByText("Username: Buzz");
+  await userEvent.click(screen.getByText("Delete Account"));
+  await userEvent.click(screen.getByText("Yes"));
+
+  await waitFor(() => {
+    expect(toast.success).toHaveBeenCalledWith("Account successfully deleted 👋");
+  });
+});
+
+test("shows a success toast when updating password", async () => {
+  localStorageMock.getItem.mockReturnValue("token");
+
+  getUser.mockResolvedValue({
+    user: {
+      username: "Buzz",
+      email: "buzz@nasa.gov",
+    },
+  });
+
+  editUser.mockResolvedValue({});
+
+  render(<ProfilePage />);
+
+  await screen.findByText("Username: Buzz");
+  await userEvent.click(screen.getAllByText("Edit")[1]);
+
+  const passwordInputs = screen.getAllByLabelText(/password/i);
+  await userEvent.type(passwordInputs[0], "Password1!");
+  await userEvent.type(passwordInputs[1], "Password1!");
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+  await waitFor(() => {
+    expect(toast.success).toHaveBeenCalledWith("Password updated successfully! ✏️");;
+  });
+});
 });

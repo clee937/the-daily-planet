@@ -9,6 +9,8 @@ import AstronomyPage from "./pages/Astronomy/AstronomyPage";
 import { FavouritesPage } from "./pages/Profile/FavouritesPage";
 import { ProfilePage } from "./pages/Profile/ProfilePage";
 import { ISSPage } from "./pages/ISS/ISSPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // docs: https://reactrouter.com/en/main/start/overview
 const router = createBrowserRouter([
@@ -52,6 +54,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+      <ToastContainer position="bottom-right" />
     </>
   );
 }
