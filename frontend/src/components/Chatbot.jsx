@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { sendMessage } from "../services/gemini";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export function Chatbot() {
+    const location = useLocation();
     const token = localStorage.getItem("token");
     const [prompt, setPrompt] = useState("");
     const [messages, setMessages] = useState([]);
@@ -69,7 +70,7 @@ export function Chatbot() {
                     <p style={{ color: "red" }}>
                         {error}
                         {error === "You must be logged in to use this feature." && (
-                            <> <Link to="/signup">Sign up</Link> or <Link to="/login">Log in</Link></>
+                            <> <Link to="/signup">Sign up</Link> or <Link to="/login" state={{ from: location.pathname }}>Log in</Link></>
                         )}
                     </p>
                 </div>

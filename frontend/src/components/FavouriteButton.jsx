@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -7,6 +7,7 @@ const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 //user must be logged in to favourite an image
 function FavouriteButton({ picture }) {
+    const location = useLocation();
     const [saved, setSaved] = useState(false);  //tracking if the post has been saved, a save is in progress, and errors
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
@@ -104,7 +105,7 @@ return (
             <div>
                 <p style= {{ colour: "red" }}>
                     {error} <Link to="/signup">Sign up</Link> or {" "}
-                    <Link to="/login">Log in</Link>
+                    <Link to="/login" state={{ from: location.pathname }}>Log in</Link>
                 </p>
             </div>
         )}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { login } from "../../services/authentication";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,6 +9,8 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const { setIsLoggedIn } = useOutletContext(); 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -17,7 +19,7 @@ export function LoginPage() {
       localStorage.setItem("token", token);
       toast.success("Logged in successfully! 🚀");
       setIsLoggedIn(true);
-      navigate("/")
+      navigate(from)
     } catch (err) {
       console.error(err);
       navigate("/login");

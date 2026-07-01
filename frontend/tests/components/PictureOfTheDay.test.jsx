@@ -1,7 +1,7 @@
 import PictureOfTheDay from "../../src/components/PictureOfTheDay";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, MemoryRouter } from "react-router-dom";
 
 vi.mock("react-router-dom", async () => {
     const actual = await vi.importActual("react-router-dom");
@@ -35,7 +35,7 @@ describe("PictureOfTheDay", () => {
     });
 
     it("shows a loading message first, then the picture", async () => {
-    render(<PictureOfTheDay />);
+    render(<MemoryRouter><PictureOfTheDay /></MemoryRouter>);
 
     // Loading text shows before the fetch resolves
     expect(screen.getByText(/loading/i)).toBeTruthy();
@@ -47,14 +47,14 @@ describe("PictureOfTheDay", () => {
     });
 
     it("renders the image with the correct src and alt", async () => {
-    render(<PictureOfTheDay />);
+    render(<MemoryRouter><PictureOfTheDay /></MemoryRouter>);
 
     const image = await screen.findByAltText("The Houston Nebula");
     expect(image.getAttribute("src")).toEqual("https://example.com/houston.jpg");
     });
 
     it("displays the explanation text", async () => {
-    render(<PictureOfTheDay />);
+    render(<MemoryRouter><PictureOfTheDay /></MemoryRouter>);
 
     await waitFor(() => {
         expect(screen.getByText("Views of the Houston Nebula")).toBeTruthy();
