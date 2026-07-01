@@ -57,8 +57,8 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    expect(await screen.findByText("Username: Buzz")).toBeTruthy();
-    expect(screen.getByText("Email: buzz@nasa.gov")).toBeTruthy();
+    expect(await screen.findByText("Buzz")).toBeTruthy();
+    expect(screen.getByText("buzz@nasa.gov")).toBeTruthy();
   });
 
 
@@ -76,7 +76,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Email: buzz@nasa.gov");
+      await screen.findByText("buzz@nasa.gov");
 
       await userEvent.click(screen.getAllByText("Edit")[0]);
 
@@ -95,8 +95,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Email: buzz@nasa.gov");
-
+      await screen.findByText("buzz@nasa.gov");
       await userEvent.click(screen.getAllByText("Edit")[0]);
       await userEvent.click(screen.getAllByText("Cancel")[0]);
       expect(screen.queryByRole("textbox")).toBeNull();
@@ -117,7 +116,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Email: buzz@nasa.gov");
+      await screen.findByText("buzz@nasa.gov");
       await userEvent.click(screen.getAllByText("Edit")[0]);
 
       const input = screen.getByRole("textbox");
@@ -148,7 +147,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Email: buzz@nasa.gov");
+      await screen.findByText("buzz@nasa.gov");
       await userEvent.click(screen.getAllByText("Edit")[0]);
       await userEvent.type(screen.getByRole("textbox"), "taken@nasa.gov");
       await userEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -173,7 +172,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Email: buzz@nasa.gov");
+      await screen.findByText("buzz@nasa.gov");
       await userEvent.click(screen.getAllByText("Edit")[0]);
 
       const input = screen.getByRole("textbox");
@@ -205,7 +204,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
 
       await userEvent.click(screen.getAllByText("Edit")[1]);
 
@@ -225,7 +224,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getAllByText("Edit")[1]);
       await userEvent.click(screen.getAllByText("Cancel")[0]);
 
@@ -244,7 +243,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getAllByText("Edit")[1]);
 
       const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -269,7 +268,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getAllByText("Edit")[1]);
 
       const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -294,7 +293,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getAllByText("Edit")[1]);
 
       const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -321,7 +320,7 @@ describe("Profile Page", () => {
 
         render(<ProfilePage />);
 
-        await screen.findByText("Username: Buzz");
+        await screen.findByText("Buzz");
         await userEvent.click(screen.getAllByText("Edit")[1]);
 
         const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -352,7 +351,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getAllByText("Edit")[1]);
 
       const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -379,15 +378,15 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
 
       await userEvent.click(screen.getByText("Delete Account"));
 
       expect(
         screen.getByText(/Are you sure you want to delete your account/i)
       ).toBeTruthy();
-      expect(screen.getByText("Yes")).toBeTruthy();
-      expect(screen.getByText("No")).toBeTruthy();
+      expect(screen.getByText("Yes, delete")).toBeTruthy();
+      expect(screen.getByText("Cancel")).toBeTruthy();
     });
 
     test("deletes the account", async () => {
@@ -404,9 +403,9 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getByText("Delete Account"));
-      await userEvent.click(screen.getByText("Yes"));
+      await userEvent.click(screen.getByText("Yes, delete"));
 
       await waitFor(() => {
         expect(deleteUser).toHaveBeenCalledWith("token");
@@ -431,9 +430,9 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getByText("Delete Account"));
-      await userEvent.click(screen.getByText("Yes"));
+      await userEvent.click(screen.getByText("Yes, delete"));
 
       await waitFor(() => {
         expect(deleteUser).toHaveBeenCalledWith("token");
@@ -460,7 +459,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Email: buzz@nasa.gov");
+      await screen.findByText("buzz@nasa.gov");
       await userEvent.click(screen.getAllByText("Edit")[0]);
       await userEvent.type(screen.getByRole("textbox"), "new@nasa.gov");
       await userEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -484,9 +483,9 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getByText("Delete Account"));
-      await userEvent.click(screen.getByText("Yes"));
+      await userEvent.click(screen.getByText("Yes, delete"));
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith("Account successfully deleted 👋");
@@ -507,7 +506,7 @@ describe("Profile Page", () => {
 
       render(<ProfilePage />);
 
-      await screen.findByText("Username: Buzz");
+      await screen.findByText("Buzz");
       await userEvent.click(screen.getAllByText("Edit")[1]);
 
       const passwordInputs = screen.getAllByLabelText(/password/i);
