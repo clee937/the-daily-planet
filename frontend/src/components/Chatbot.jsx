@@ -123,7 +123,7 @@ export function Chatbot() {
                     <p className="chat-error">
                         {error}
                         {error === "You must be logged in to use this feature." && (
-                            <> <Link to="/signup">Sign up</Link> or <Link to="/login" state={{ from: location.pathname }}>Log in</Link></>
+                            <> <Link to="/signup" state={{ from: location.pathname }}>Sign up</Link> or <Link to="/login" state={{ from: location.pathname }}>Log in</Link></>
                         )}
                     </p>
                 )}

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { setIsLoggedIn } = useOutletContext(); 
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,6 +15,12 @@ export function LoginPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+
+      if (!email || !password) { // ADDED
+        setError("All fields are required!");
+        return;
+    }
+
     try {
       const token = await login(email, password);
       localStorage.setItem("token", token);
@@ -22,7 +29,7 @@ export function LoginPage() {
       navigate(from)
     } catch (err) {
       console.error(err);
-      navigate("/login");
+      setError("Incorrect email or password. Please try again.");
     }
   }
 
@@ -39,6 +46,7 @@ export function LoginPage() {
       <div className="auth-page">
         <div className="auth-card">
         <h2>Login</h2>
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email:</label>

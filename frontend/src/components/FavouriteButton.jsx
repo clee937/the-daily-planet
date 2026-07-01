@@ -23,6 +23,29 @@ function FavouriteButton({ picture }) {
                 }
             }, [isLoggedIn]);
 
+    useEffect(() => {
+    async function checkIfSaved() {
+        if (!token) return;
+        try {
+            const res = await fetch(`${API_URL}/favourites`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            const existing = data.favourites.find(
+                (fav) => fav.sourceId === picture.sourceId
+            );
+            if (existing) {
+                setSaved(true);
+                setFavouriteId(existing._id);
+            }
+        } catch (err) {
+            console.error("Could not check favourites", err);
+        }
+    }
+    checkIfSaved();
+}, [token, picture.sourceId]);
+
     async function handleSave() {
     if (!token) {
         setSaved(false);

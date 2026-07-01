@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { signup } from "../../services/authentication";
@@ -11,6 +11,8 @@ export function SignupPage() {
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -45,7 +47,7 @@ export function SignupPage() {
         Welcome to The Daily Planet 🚀
       </>
     );
-      navigate("/login");
+      navigate("/login", { state: { from } });
     } catch (err) {
       console.error(err);
       setError("Email or username already exists");
@@ -101,7 +103,7 @@ export function SignupPage() {
           {error && <p style={{ color: "red" }}>{error}</p>}
           <input className="hud-button" role="submit-button" id="submit" type="submit" value="Submit" />
         </form>
-        <p className="signup-text">Already have an account? Log in <a href="/login">here</a></p>
+        <p className="signup-text">Already have an account? Log in <Link to="/login" state={{ from }}>here</Link></p>
       </div>
     </div>
     </>
