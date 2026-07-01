@@ -143,7 +143,7 @@ export function Chatbot() {
                     }}
                     placeholder="Ask Rover about space..."
                 />
-                <button type="submit" disabled={!isLoggedIn || loading || messagesRemaining === 0}>
+                <button type="submit" disabled={loading || messagesRemaining === 0}>
                     Send
                 </button>
             </form>

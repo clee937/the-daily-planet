@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUser, editUser, deleteUser, checkEmail } from "../../services/users";
 import { toast } from "react-toastify";
+import { useOutletContext } from "react-router-dom";
 
 export function ProfilePage() {
     const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -14,6 +15,9 @@ export function ProfilePage() {
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
+    const outletContext = useOutletContext();
+    const noop = () => {};
+    const setIsLoggedIn = outletContext?.setIsLoggedIn ?? noop;
 
     // Load user details when page opens
     useEffect(() => {
@@ -81,6 +85,7 @@ export function ProfilePage() {
         try {
             await deleteUser(token);
             localStorage.removeItem("token");
+            setIsLoggedIn(false);
             toast.success("Account successfully deleted 👋");
             navigate("/");
         } catch (err) {
