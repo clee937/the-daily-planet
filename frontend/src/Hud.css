@@ -662,6 +662,150 @@ body {
     font-size: 1rem;
 }
 
+/* ---------- ISS page ---------- */
+.iss-page {
+    padding: 18px;
+}
+.iss-status {
+    text-align: center;
+    color: var(--text-body);
+    font-size: 16px;
+    padding: 40px 18px;
+}
+.iss-main {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 14px;
+}
+.telemetry-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    background: var(--bg);
+}
+.iss-location-prompt {
+    font-size: 14px;
+    color: var(--text-label);
+    margin: 10px 0 0;
+}
+.iss-map {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;      /* clips the map to the rounded corners */
+}
+.iss-disclaimer {
+    font-size: 12px;
+    color: var(--text-label);
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (max-width: 700px) {
+    .iss-main { grid-template-columns: 1fr; }
+}
+
+.astronomy-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 18px;
+}
+.astronomy-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.astronomy-title {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: var(--text, #FFFFFF);
+    margin: 0 0 10px;
+}
+.astronomy-intro {
+    color: var(--text-body, #D5E0EA);
+    margin: 0 0 14px;
+}
+.astronomy-location {
+    color: var(--accent, #4DF5A6);
+    font-size: 14px;
+    margin-top: 12px;
+}
+.astronomy-error {
+    color: #FF8A8A;
+    font-size: 14px;
+}
+.astronomy-section {
+    margin-bottom: 20px;
+}
+.astronomy-tagline {
+    font-style: italic;
+    color: var(--text-label, #A6B8C8);
+}
+.astronomy-note {
+    font-size: 13px;
+    color: var(--text-label, #A6B8C8);
+    line-height: 1.6;
+}
+.astronomy-credit {
+    text-align: center;
+    margin: 20px 0;
+}
+.astronomy-control {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0;
+}
+.astronomy-input {
+    background: var(--bg, #060B11);
+    border: 1px solid var(--border, #33455A);
+    border-radius: 6px;
+    color: var(--text-body, #D5E0EA);
+    font-family: var(--font-mono, monospace);
+    font-size: 14px;
+    padding: 9px 12px;
+}
+.astronomy-input:focus-visible {
+    outline: 2px solid var(--cyan, #7FE8FF);
+    outline-offset: 1px;
+}
+
+/* Grid of visible-object cards */
+.astronomy-grid {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+}
+.astronomy-card {
+    background: var(--bg, #060B11);
+    border: 1px solid var(--border, #33455A);
+    border-radius: var(--radius, 8px);
+    padding: 16px;
+}
+.astronomy-card h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: var(--text, #FFFFFF);
+}
+.card-details {
+    margin: 6px 0;
+    font-size: 14px;
+    color: var(--text-body, #D5E0EA);
+}
+.astronomy-image {
+    margin-top: 14px;
+}
+.astronomy-image img {
+    max-width: 100%;
+    border-radius: var(--radius, 8px);
+    border: 1px solid var(--border, #33455A);
+}
+.astronomy-chat {
+    margin-top: 24px;
+}
+
 
 /* ---------- Responsive: stack on small screens ---------- */
 @media (max-width: 700px) {

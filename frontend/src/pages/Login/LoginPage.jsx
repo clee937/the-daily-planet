@@ -61,10 +61,6 @@ export function LoginPage() {
             <p className="signup-text">Dont have an account? Sign up <a href="/signup">here</a></p>
         </div>
       </div>
-      <footer className="hud-footer">
-        <span>THE DAILY PLANET</span>
-        <span>// BUILT BY [your team name] · 2026</span>
-      </footer>
     </>
   );
 }

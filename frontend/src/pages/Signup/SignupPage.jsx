@@ -104,10 +104,6 @@ export function SignupPage() {
         <p className="signup-text">Already have an account? Log in <a href="/login">here</a></p>
       </div>
     </div>
-    <footer className="hud-footer">
-        <span>THE DAILY PLANET</span>
-        <span>// BUILT BY [your team name] · 2026</span>
-    </footer>
     </>
   );
 }
