@@ -39,9 +39,9 @@ describe("Navbar Component", () => {
             renderNavbar();
             expect(screen.queryByRole("button", { name: /log out/i })).toBeNull();
         });
-        it("does not show Profile button", () => {
+        it("does not show Profile link", () => {
             renderNavbar();
-            expect(screen.queryByRole("button", { name: /profile/i })).toBeNull();
+            expect(screen.queryByRole("link", { name: /profile/i })).toBeNull();
         });
         it("shows the Home link", () => {
             renderNavbar();
@@ -62,9 +62,9 @@ describe("Navbar Component", () => {
             renderNavbar(true);
             expect(screen.getByRole("button", { name: /log out/i })).toBeTruthy();
         });
-        it("shows the Profile button", () => {
+        it("shows the Profile link", () => {
             renderNavbar(true);
-            expect(screen.getByRole("button", { name: /profile/i })).toBeTruthy();
+            expect(screen.getByRole("link", { name: /profile/i })).toBeTruthy();
         });
         it("does not show the Log In link", () => {
             renderNavbar(true);
