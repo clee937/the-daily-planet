@@ -63,6 +63,10 @@ export function ISSPage() {
 
     return (
         <div className="iss-page">
+            <header className="iss-header">
+                <h1 className="iss-title">🛰️ International Space Station Tracker</h1>
+                <p className="iss-intro">Follow the ISS in real time and see how far it is from your location.</p>
+            </header>
             <div className="iss-main">
                 <div className="hud-panel iss-tracker">
                     <div className="hud-panel-header">

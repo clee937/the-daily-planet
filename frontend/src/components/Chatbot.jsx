@@ -114,8 +114,8 @@ export function Chatbot() {
     return (
         <div className="chat-panel">
             <div className="chat-header">
-                <span className="hud-dot"></span>
-                <span>ROVER // COMMS CHANNEL OPEN</span>
+                <span className={`hud-dot ${!isLoggedIn ? "offline" : ""}`}></span>
+                <span>ROVER // COMMS CHANNEL {isLoggedIn ? "OPEN" : "CLOSED - LOGIN REQUIRED"}</span>
             </div>
 
             <div className="chat-body">
@@ -154,7 +154,7 @@ export function Chatbot() {
                         setPrompt(event.target.value);
                         setError(null);
                     }}
-                    placeholder="Ask Rover about space..."
+                    placeholder="Ask Rover, Mission Control's AI space pup..."
                     aria-label="Ask Rover a question"
                 />
                 <button type="submit" disabled={loading || messagesRemaining === 0}>
