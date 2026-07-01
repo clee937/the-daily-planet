@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { test, vi } from "vitest";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { getUser, editUser, deleteUser, checkEmail } from "../../src/services/users";
 import { ProfilePage } from "../../src/pages/Profile/ProfilePage";
 import { toast } from "react-toastify";
@@ -9,9 +9,18 @@ import { toast } from "react-toastify";
 // Mock useNavigate
 const navigateMock = vi.fn();
 
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => navigateMock,
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+
+  return {
+    ...actual,
+    useNavigate: () => navigateMock,
+    useOutletContext: () => ({
+      isLoggedIn: true,
+      setIsLoggedIn: vi.fn()
+    }),
+  }
+});
 
 // Mock toast
 vi.mock("react-toastify", () => ({

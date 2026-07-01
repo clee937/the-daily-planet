@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
 import { sendMessage } from "../services/gemini";
 import { Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export function Chatbot() {
-    const token = localStorage.getItem("token");
     const [prompt, setPrompt] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [messagesRemaining, setMessagesRemaining] = useState(10);
     const [minutesUntilReset, setMinutesUntilReset] = useState(0);
+    const outletContext = useOutletContext();
+    const noop = () => {};
+    const setIsLoggedIn = outletContext?.setIsLoggedIn ?? noop;
+    const isLoggedIn = outletContext?.isLoggedIn ?? false;
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -24,13 +29,46 @@ export function Chatbot() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                setIsLoggedIn(false);
+                toast.info(<>Your session has expired.<br/>Please log in again.</>);
+                return;
+            }
+
             const data = await response.json();
             setMessagesRemaining(data.messagesRemaining);
             setMinutesUntilReset(data.minutesUntilReset);
         };
 
         fetchStatus();
-    }, []);
+    }, [setIsLoggedIn]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            const expiresAt = payload.exp * 1000;
+            const timeout = expiresAt - Date.now();
+
+            if (timeout > 0) {
+                const timer = setTimeout(() => {
+                    localStorage.removeItem("token");
+                    setIsLoggedIn(false);
+                    setMessagesRemaining(10);
+                    setMinutesUntilReset(0);
+                    toast.info(<>Your session has expired.<br/>Please log in again.</>);
+                }, timeout);
+
+                return () => clearTimeout(timer);
+            }
+        } catch (err) {
+            console.error("Invalid token:", err);
+        }
+    }, [setIsLoggedIn]);
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -55,6 +93,15 @@ export function Chatbot() {
             setMinutesUntilReset(response.minutesUntilReset);
         } catch (err) {
             console.error(err);
+
+            if (err.message === "You must be logged in to use this feature.") {
+                localStorage.removeItem("token");
+                setIsLoggedIn(false);
+                setMessagesRemaining(10);
+                setMinutesUntilReset(0);
+                toast.info(<>Your session has expired.<br/>Please log in again.</>);
+                return;
+            }
             setError(err.message);
             // setMessages((messages) => [...messages, { role: "rover", text: err.message }]);
         } finally {
@@ -93,7 +140,7 @@ export function Chatbot() {
 
                 {loading && <div className="chat-rover"><span className="name">ROVER:</span> Rover is thinking... 🚀</div>}
             </div>
-            {token && (messagesRemaining > 0 ? (
+            {isLoggedIn && (messagesRemaining > 0 ? (
                 <p><small>{messagesRemaining} of 10 messages remaining this hour.</small></p>
             ) : (
                 <p className="warning"><small><strong>You've reached your hourly limit of 10 messages. Please try again in {minutesUntilReset} minute{minutesUntilReset !== 1 ? "s" : ""}.</strong></small></p>
