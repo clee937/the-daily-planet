@@ -93,7 +93,7 @@ export function SignupPage() {
           {error && <p style={{ color: "red" }}>{error}</p>}
           <input className="hud-button" role="submit-button" id="submit" type="submit" value="Submit" />
         </form>
-        <p className="signup-text">Dont have an account? Log in <a href="/login">here</a></p>
+        <p className="signup-text">Already have an account? Log in <a href="/login">here</a></p>
       </div>
     </div>
     <footer className="hud-footer">
