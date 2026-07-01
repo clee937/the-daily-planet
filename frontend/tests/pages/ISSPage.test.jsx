@@ -5,7 +5,7 @@ import { ISSPage } from "../../src/pages/ISS/ISSPage";
 
 // Mock fetch
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+globalThis.fetch = mockFetch;
 
 // Mock Leaflet as leaflet will not wirk in tests - learned the hard way!
 vi.mock("react-leaflet", () => ({
@@ -19,7 +19,7 @@ vi.mock("react-leaflet", () => ({
 const mockGeolocation = {
     getCurrentPosition: vi.fn(),
 };
-global.navigator.geolocation = mockGeolocation;
+globalThis.navigator.geolocation = mockGeolocation;
 
 describe("ISS Page", () => {
     beforeEach(() => {
@@ -46,8 +46,8 @@ test("shows loading state initially", () => {
 test("displays ISS location after loading", async () => {
     render(<MemoryRouter><ISSPage /></MemoryRouter>);
     await waitFor(() => {
-        expect(screen.getByText(/Latitude/)).toBeTruthy();
-        expect(screen.getByText(/Longitude/)).toBeTruthy();
+        expect(screen.getByText(/LATITUDE/)).toBeTruthy();
+        expect(screen.getByText(/LONGITUDE/)).toBeTruthy();
     });
 });
 
@@ -69,14 +69,14 @@ test("shows distance when user location is shared", async () => {
 });
     render(<MemoryRouter><ISSPage /></MemoryRouter>);
     await waitFor(() => {
-        expect(screen.getByText(/miles from the ISS/)).toBeTruthy();
+        expect(screen.getByText(/DISTANCE FROM YOU/)).toBeTruthy();
     });
 });
 
 test("shows refresh button", async () => {
     render(<MemoryRouter><ISSPage /></MemoryRouter>);
     await waitFor(() => {
-        expect(screen.getByText("Refresh Location")).toBeTruthy();
+        expect(screen.getByText(/Refresh Location/)).toBeTruthy();
     });
 });
 
@@ -93,7 +93,7 @@ test("shows error message when ISS fetch fails", async () => {
 test("shows ISS tracker title", async () => {
     render(<MemoryRouter><ISSPage /></MemoryRouter>);
     await waitFor(() => {
-        expect(screen.getByText("ISS Live Tracker")).toBeTruthy();
+        expect(screen.getByText(/ISS LIVE TRACKER/)).toBeTruthy();
     });
 });
 });
