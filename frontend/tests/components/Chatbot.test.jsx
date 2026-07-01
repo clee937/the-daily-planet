@@ -1,11 +1,9 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useOutletContext } from "react-router-dom";
 import { Chatbot } from "../../src/components/Chatbot";
 import { sendMessage } from "../../src/services/gemini";
 
-// const payload = btoa(JSON.stringify({ sub: "123", exp: Math.floor(Date.now() / 1000) + 3600 }));
-// const FAKE_TOKEN = `header.${payload}.signature`;
 const FAKE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U";
 const localStorageMock = (() => {
     let store = {};
@@ -17,17 +15,30 @@ const localStorageMock = (() => {
     };
 })();
 
+vi.mock("react-toastify", () => ({
+    toast: { info: vi.fn() },
+}));
 
 vi.mock("../../src/services/gemini", () => ({
     sendMessage: vi.fn(),
 }));
 
+vi.mock("react-router-dom", async () => {
+    const actual = await vi.importActual("react-router-dom");
+    return {
+        ...actual,
+        useOutletContext: vi.fn(),
+    };
+});
+
 const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
-function mockStatusFetch() {
+
+function mockStatusFetch(overrides = {}) {
     mockFetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ messagesRemaining: 10, minutesUntilReset: 60 }),
+        status: 200,
+        json: async () => ({ messagesRemaining: 10, minutesUntilReset: 60, ...overrides }),
     });
 }
 
@@ -43,6 +54,7 @@ describe("Chatbot", () => {
         Object.defineProperty(window, 'localStorage', { value: localStorageMock });
         vi.clearAllMocks();
         localStorage.clear();
+        useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
         mockStatusFetch();
     });
 
@@ -155,10 +167,8 @@ describe("Chatbot", () => {
 
     it("shows messages remaining count when logged in", async () => {
         localStorage.setItem("token", FAKE_TOKEN);
-        mockFetch.mockResolvedValue({
-            ok: true,
-            json: async () => ({ messagesRemaining: 7, minutesUntilReset: 15 }),
-        });
+        useOutletContext.mockReturnValue({ isLoggedIn: true, setIsLoggedIn: vi.fn() });
+        mockStatusFetch({ messagesRemaining: 7, minutesUntilReset: 15 });
 
         renderChatbot();
 
@@ -170,12 +180,12 @@ describe("Chatbot", () => {
     });
     
     it("shows hourly limit warning with correct minutes when limit is reached", async () => {
-        localStorage.setItem("token", "fake-token");
-        mockFetch.mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({ messagesRemaining: 0, minutesUntilReset: 1 }),
-        });
+        localStorage.setItem("token", FAKE_TOKEN);
+        useOutletContext.mockReturnValue({ isLoggedIn: true, setIsLoggedIn: vi.fn() });
+        mockStatusFetch({ messagesRemaining: 0, minutesUntilReset: 1 });
+
         renderChatbot();
+
         await waitFor(() => {
             expect(screen.getByText((content) =>
                 content.includes("Please try again in 1 minute.")
