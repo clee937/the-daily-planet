@@ -116,7 +116,7 @@ describe("Astronomy Page", () => {
         await userEvent.click(screen.getByRole("button", { name: /refresh location/i }));
 
         // trigger date change to call getVisibleObjects manually
-        const dateInput = screen.getByLabelText(/select a date for visible objects/i);
+        const dateInput = screen.getAllByLabelText(/select a date:/i)[0];
         await userEvent.type(dateInput, "2026-01-01");
 
         alertMock.mockRestore();
@@ -189,7 +189,7 @@ describe("Astronomy Page", () => {
     //     await userEvent.click(screen.getByRole("button", { name: /refresh location/i }));
 
     //     // trigger date change to call getVisibleObjects manually
-    //     const dateInput = screen.getByLabelText(/select a date for visible objects/i);
+    //     const dateInput = screen.getAllByLabelText(/select a date:/i)[1];
     //     await userEvent.type(dateInput, "2026-01-01");
 
     //     expect(alertMock).toHaveBeenCalledWith("Location is required.");
@@ -343,7 +343,7 @@ describe("Astronomy Page", () => {
         global.fetch = vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve([]) });
         renderPage();
 
-        const dateInput = screen.getByLabelText(/select a date for visible objects/i);
+        const dateInput = screen.getAllByLabelText(/select a date:/i)[0];
         await userEvent.clear(dateInput);
         await userEvent.type(dateInput, "2026-12-25");
 
@@ -354,7 +354,7 @@ describe("Astronomy Page", () => {
         mockLocationSuccess();
         renderPage();
 
-        const dateInput = screen.getByLabelText(/select a date for moon phase/i);
+        const dateInput = screen.getAllByLabelText(/select a date:/i)[1];
         await userEvent.clear(dateInput);
         await userEvent.type(dateInput, "2026-12-25");
 
