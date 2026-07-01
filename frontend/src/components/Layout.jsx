@@ -10,7 +10,7 @@ function Layout() {
             <Outlet context={{ isLoggedIn, setIsLoggedIn }} />
             <footer className="hud-footer">
                 <span>THE DAILY PLANET</span>
-                <span>// BUILT BY TEAM 2026: A Coding Odyssey </span>
+                <span>BUILT BY TEAM // 2026: A CODING ODYSSEY</span>
             </footer>
         </>
     );
