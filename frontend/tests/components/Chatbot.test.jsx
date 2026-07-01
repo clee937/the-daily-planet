@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { Chatbot } from "../../src/components/Chatbot";
+import { sendMessage } from "../../src/services/gemini";
 
 const localStorageMock = (() => {
     let store = {};
@@ -18,7 +19,14 @@ vi.mock("../../src/services/gemini", () => ({
     sendMessage: vi.fn(),
 }));
 
-import { sendMessage } from "../../src/services/gemini";
+const mockFetch = vi.fn();
+globalThis.fetch = mockFetch;
+function mockStatusFetch() {
+    mockFetch.mockResolvedValue({
+        ok: true,
+        json: async () => ({ messagesRemaining: 10, minutesUntilReset: 0 }),
+    });
+}
 
 const renderChatbot = () =>
     render(
@@ -31,6 +39,7 @@ describe("Chatbot", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         localStorage.clear();
+        mockStatusFetch();
     });
 
     it("renders the input and send button", () => {
@@ -136,6 +145,34 @@ describe("Chatbot", () => {
             const content = screen.getByText
             expect(screen.getByText((content) => 
             content.includes("You've reached your message limit!")
+            )).toBeTruthy();
+        });
+    });
+
+    it("shows messages remaining count when logged in", async () => {
+        localStorage.setItem("token", "fake-token");
+        mockFetch.mockResolvedValue({
+            ok: true,
+            json: async () => ({ messagesRemaining: 7, minutesUntilReset: 0 }),
+        });
+        renderChatbot();
+        await waitFor(() => {
+            expect(screen.getByText((content) =>
+                content.includes("7 of 10 messages remaining this hour.")
+            )).toBeTruthy();
+        });
+    });
+    
+    it("shows hourly limit warning with correct minutes when limit is reached", async () => {
+        localStorage.setItem("token", "fake-token");
+        mockFetch.mockResolvedValue({
+            ok: true,
+            json: async () => ({ messagesRemaining: 0, minutesUntilReset: 1 }),
+        });
+        renderChatbot();
+        await waitFor(() => {
+            expect(screen.getByText((content) =>
+                content.includes("Please try again in 1 minute.")
             )).toBeTruthy();
         });
     });
