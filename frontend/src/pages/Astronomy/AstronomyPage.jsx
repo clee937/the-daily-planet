@@ -53,7 +53,7 @@ export default function AstronomyPage() {
     // Function to call VISIBLE OBJECTS route:
     const getVisibleObjects = async (lat, lon) => {        
         if (lat === null || lon === null) {
-            alert("Location required");
+            alert("Location is required.");
             return;
         }
 
