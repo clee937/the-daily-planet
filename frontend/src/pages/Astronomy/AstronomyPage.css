@@ -38,7 +38,6 @@
     font-style: italic;
     color: var(--text-body, #D5E0EA);
 }
-}
 .astronomy-note {
     font-size: 13px;
     color: var(--text-label, #D5E0EA);
@@ -64,6 +63,12 @@
     font-size: 14px;
     padding: 9px 12px;
 }
+
+.astronomy-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
 .astronomy-input:focus-visible {
     outline: 2px solid var(--cyan, #7FE8FF);
     outline-offset: 1px;
