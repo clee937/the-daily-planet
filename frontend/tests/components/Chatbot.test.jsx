@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, useOutletContext } from "react-router-dom";
 import { Chatbot } from "../../src/components/Chatbot";
 import { sendMessage } from "../../src/services/gemini";
+import { toast } from "react-toastify";
 
 const FAKE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U";
 const localStorageMock = (() => {
@@ -40,6 +41,14 @@ function mockStatusFetch(overrides = {}) {
         status: 200,
         json: async () => ({ messagesRemaining: 10, minutesUntilReset: 60, ...overrides }),
     });
+}
+
+function makeToken(expOffsetSeconds) {
+    const payload = btoa(JSON.stringify({ 
+        sub: "123", 
+        exp: Math.floor(Date.now() / 1000) + expOffsetSeconds 
+    }));
+    return `header.${payload}.signature`;
 }
 
 const renderChatbot = () =>
@@ -192,4 +201,64 @@ describe("Chatbot", () => {
             )).toBeTruthy();
         });
     });
+
+    describe("session expiry", () => {
+    let setIsLoggedInMock;
+
+    beforeEach(() => {
+        setIsLoggedInMock = vi.fn();
+        useOutletContext.mockReturnValue({ isLoggedIn: true, setIsLoggedIn: setIsLoggedInMock });
+    });
+
+        it("removes token and calls setIsLoggedIn(false) when chat-status returns 401", async () => {
+            localStorage.setItem("token", FAKE_TOKEN);
+            mockFetch.mockResolvedValueOnce({
+                ok: false,
+                status: 401,
+                json: async () => ({}),
+            });
+
+            renderChatbot();
+
+            await waitFor(() => {
+                expect(localStorage.getItem("token")).toBeNull();
+                expect(setIsLoggedInMock).toHaveBeenCalledWith(false);
+                expect(toast.info).toHaveBeenCalled();
+            });
+        });
+
+        it("logs error when token is invalid and cannot be parsed", async () => {
+            const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+            localStorage.setItem("token", "not.a.valid.token");
+            mockStatusFetch();
+
+            renderChatbot();
+
+            await waitFor(() => {
+                expect(consoleSpy).toHaveBeenCalledWith("Invalid token:", expect.any(Error));
+            });
+
+            consoleSpy.mockRestore();
+        });
+
+
+        it("removes token and logs out when sendMessage returns session expired error", async () => {
+            localStorage.setItem("token", FAKE_TOKEN);
+            mockStatusFetch();
+            sendMessage.mockRejectedValueOnce(new Error("You must be logged in to use this feature."));
+
+            renderChatbot();
+
+            const input = screen.getByPlaceholderText(/ask rover/i);
+            fireEvent.change(input, { target: { value: "What is Mars?" } });
+            fireEvent.submit(input.closest("form"));
+
+            await waitFor(() => {
+                expect(localStorage.getItem("token")).toBeNull();
+                expect(setIsLoggedInMock).toHaveBeenCalledWith(false);
+                expect(toast.info).toHaveBeenCalled();
+            });
+        });
+    });
 });
+
