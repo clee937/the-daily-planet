@@ -117,6 +117,11 @@ describe("FavouriteButton", () => {
         globalThis.fetch = vi.fn()
             .mockResolvedValueOnce({
                 ok: true,
+                status: 200,
+                json: async () => ({ favourites: [] }),
+            })
+            .mockResolvedValueOnce({
+                ok: true,
                 status: 201,
                 json: async () => ({ favourite: { _id: "fav1" } }),
             })

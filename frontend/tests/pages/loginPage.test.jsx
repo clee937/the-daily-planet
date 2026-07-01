@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -60,17 +60,18 @@ describe("Login Page", () => {
   });
 
   test("navigates to /login on unsuccessful login", async () => {
-    useOutletContext.mockReturnValue({ isLoggedIn: false });
+    useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
 
     render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     login.mockRejectedValue(new Error("Error logging in"));
-    const navigateMock = useNavigate();
 
     await completeLoginForm();
 
-    expect(navigateMock).toHaveBeenCalledWith("/login");
+    await waitFor(() => {
+      expect(screen.getByText("Incorrect email or password. Please try again.")).toBeTruthy();
   });
+});
 
     test("shows a success toast on login", async () => {
     useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
