@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { sendMessage } from "../services/gemini";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export function Chatbot() {
+    const location = useLocation();
+    const token = localStorage.getItem("token");
     const [prompt, setPrompt] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -112,8 +114,8 @@ export function Chatbot() {
     return (
         <div className="chat-panel">
             <div className="chat-header">
-                <span className="hud-dot"></span>
-                <span>ROVER // COMMS CHANNEL OPEN</span>
+                <span className={`hud-dot ${!isLoggedIn ? "offline" : ""}`}></span>
+                <span>ROVER // COMMS CHANNEL {isLoggedIn ? "OPEN" : "CLOSED - LOGIN REQUIRED"}</span>
             </div>
 
             <div className="chat-body">
@@ -121,7 +123,7 @@ export function Chatbot() {
                     <p className="chat-error">
                         {error}
                         {error === "You must be logged in to use this feature." && (
-                            <> <Link to="/signup">Sign up</Link> or <Link to="/login">Log in</Link></>
+                            <> <Link to="/signup" state={{ from: location.pathname }}>Sign up</Link> or <Link to="/login" state={{ from: location.pathname }}>Log in</Link></>
                         )}
                     </p>
                 )}
@@ -152,7 +154,7 @@ export function Chatbot() {
                         setPrompt(event.target.value);
                         setError(null);
                     }}
-                    placeholder="Ask Rover about space..."
+                    placeholder="Ask Rover, Mission Control's AI space pup..."
                     aria-label="Ask Rover a question"
                 />
                 <button type="submit" disabled={loading || messagesRemaining === 0}>

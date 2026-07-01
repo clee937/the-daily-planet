@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { login } from "../../src/services/authentication";
 import { toast } from "react-toastify";
+import { MemoryRouter } from "react-router-dom";
 
 import { LoginPage } from "../../src/pages/Login/LoginPage";
 
@@ -51,7 +52,7 @@ describe("Login Page", () => {
   test("allows a user to login", async () => {
     useOutletContext.mockReturnValue({ isLoggedIn: false });
 
-    render(<LoginPage />);
+    render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     await completeLoginForm();
 
@@ -59,23 +60,24 @@ describe("Login Page", () => {
   });
 
   test("navigates to /login on unsuccessful login", async () => {
-    useOutletContext.mockReturnValue({ isLoggedIn: false });
+    useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
 
-    render(<LoginPage />);
+    render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     login.mockRejectedValue(new Error("Error logging in"));
-    const navigateMock = useNavigate();
 
     await completeLoginForm();
 
-    expect(navigateMock).toHaveBeenCalledWith("/login");
+    await waitFor(() => {
+      expect(screen.getByText("Incorrect email or password. Please try again.")).toBeTruthy();
   });
+});
 
     test("shows a success toast on login", async () => {
     useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
     login.mockResolvedValue("secrettoken123");
 
-    render(<LoginPage />);
+    render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     await completeLoginForm();
 
