@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { test, vi } from "vitest";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { getUser, editUser, deleteUser, checkEmail } from "../../src/services/users";
 import { ProfilePage } from "../../src/pages/Profile/ProfilePage";
 import { toast } from "react-toastify";
@@ -9,9 +9,18 @@ import { toast } from "react-toastify";
 // Mock useNavigate
 const navigateMock = vi.fn();
 
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => navigateMock,
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+
+  return {
+    ...actual,
+    useNavigate: () => navigateMock,
+    useOutletContext: () => ({
+      isLoggedIn: true,
+      setIsLoggedIn: vi.fn()
+    }),
+  }
+});
 
 // Mock toast
 vi.mock("react-toastify", () => ({
@@ -57,8 +66,8 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    expect(await screen.findByText("Username: Buzz")).toBeTruthy();
-    expect(screen.getByText("Email: buzz@nasa.gov")).toBeTruthy();
+    expect(await screen.findByText("Buzz")).toBeTruthy();
+    expect(screen.getByText("buzz@nasa.gov")).toBeTruthy();
   });
 
   test("shows the email edit form", async () => {
@@ -73,7 +82,7 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Email: buzz@nasa.gov");
+    await screen.findByText("buzz@nasa.gov");
 
     await userEvent.click(screen.getAllByText("Edit")[0]);
 
@@ -95,7 +104,7 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Email: buzz@nasa.gov");
+    await screen.findByText("buzz@nasa.gov");
     await userEvent.click(screen.getAllByText("Edit")[0]);
 
     const input = screen.getByRole("textbox");
@@ -126,7 +135,7 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Email: buzz@nasa.gov");
+    await screen.findByText("buzz@nasa.gov");
     await userEvent.click(screen.getAllByText("Edit")[0]);
     await userEvent.type(screen.getByRole("textbox"), "taken@nasa.gov");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -147,7 +156,7 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Username: Buzz");
+    await screen.findByText("Buzz");
     await userEvent.click(screen.getAllByText("Edit")[1]);
 
     const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -172,7 +181,7 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Username: Buzz");
+    await screen.findByText("Buzz");
     await userEvent.click(screen.getAllByText("Edit")[1]);
 
     const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -199,7 +208,7 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Username: Buzz");
+    await screen.findByText("Buzz");
     await userEvent.click(screen.getAllByText("Edit")[1]);
 
     const passwordInputs = screen.getAllByLabelText(/password/i);
@@ -224,7 +233,7 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Username: Buzz");
+    await screen.findByText("Buzz");
 
     await userEvent.click(screen.getByText("Delete Account"));
 
@@ -247,10 +256,10 @@ describe("Profile Page", () => {
 
     render(<ProfilePage />);
 
-    await screen.findByText("Username: Buzz");
+    await screen.findByText("Buzz");
 
     await userEvent.click(screen.getByText("Delete Account"));
-    await userEvent.click(screen.getByText("Yes"));
+    await userEvent.click(screen.getByText("Yes, delete"));
 
     await waitFor(() => {
       expect(deleteUser).toHaveBeenCalledWith("token");
@@ -261,77 +270,77 @@ describe("Profile Page", () => {
   });
 
   test("shows a success toast when updating email", async () => {
-  localStorageMock.getItem.mockReturnValue("token");
+    localStorageMock.getItem.mockReturnValue("token");
 
-  getUser.mockResolvedValue({
-    user: {
-      username: "Buzz",
-      email: "buzz@nasa.gov",
-    },
+    getUser.mockResolvedValue({
+      user: {
+        username: "Buzz",
+        email: "buzz@nasa.gov",
+      },
+    });
+
+    checkEmail.mockResolvedValue(false);
+    editUser.mockResolvedValue({});
+
+    render(<ProfilePage />);
+
+    await screen.findByText("buzz@nasa.gov");
+    await userEvent.click(screen.getAllByText("Edit")[0]);
+    await userEvent.type(screen.getByRole("textbox"), "new@nasa.gov");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Email updated successfully! ✏️");
+    });
   });
 
-  checkEmail.mockResolvedValue(false);
-  editUser.mockResolvedValue({});
+  test("shows a success toast when deleting account", async () => {
+    localStorageMock.getItem.mockReturnValue("token");
 
-  render(<ProfilePage />);
+    getUser.mockResolvedValue({
+      user: {
+        username: "Buzz",
+        email: "buzz@nasa.gov",
+      },
+    });
 
-  await screen.findByText("Email: buzz@nasa.gov");
-  await userEvent.click(screen.getAllByText("Edit")[0]);
-  await userEvent.type(screen.getByRole("textbox"), "new@nasa.gov");
-  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    deleteUser.mockResolvedValue({});
 
-  await waitFor(() => {
-    expect(toast.success).toHaveBeenCalledWith("Email updated successfully! ✏️");
-  });
-});
+    render(<ProfilePage />);
 
-test("shows a success toast when deleting account", async () => {
-  localStorageMock.getItem.mockReturnValue("token");
+    await screen.findByText("Buzz");
+    await userEvent.click(screen.getByText("Delete Account"));
+    await userEvent.click(screen.getByText("Yes, delete"));
 
-  getUser.mockResolvedValue({
-    user: {
-      username: "Buzz",
-      email: "buzz@nasa.gov",
-    },
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Account successfully deleted 👋");
+    });
   });
 
-  deleteUser.mockResolvedValue({});
+  test("shows a success toast when updating password", async () => {
+    localStorageMock.getItem.mockReturnValue("token");
 
-  render(<ProfilePage />);
+    getUser.mockResolvedValue({
+      user: {
+        username: "Buzz",
+        email: "buzz@nasa.gov",
+      },
+    });
 
-  await screen.findByText("Username: Buzz");
-  await userEvent.click(screen.getByText("Delete Account"));
-  await userEvent.click(screen.getByText("Yes"));
+    editUser.mockResolvedValue({});
 
-  await waitFor(() => {
-    expect(toast.success).toHaveBeenCalledWith("Account successfully deleted 👋");
+    render(<ProfilePage />);
+
+    await screen.findByText("Buzz");
+    await userEvent.click(screen.getAllByText("Edit")[1]);
+
+    const passwordInputs = screen.getAllByLabelText(/password/i);
+    await userEvent.type(passwordInputs[0], "Password1!");
+    await userEvent.type(passwordInputs[1], "Password1!");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Password updated successfully! ✏️");
+    });
   });
-});
-
-test("shows a success toast when updating password", async () => {
-  localStorageMock.getItem.mockReturnValue("token");
-
-  getUser.mockResolvedValue({
-    user: {
-      username: "Buzz",
-      email: "buzz@nasa.gov",
-    },
-  });
-
-  editUser.mockResolvedValue({});
-
-  render(<ProfilePage />);
-
-  await screen.findByText("Username: Buzz");
-  await userEvent.click(screen.getAllByText("Edit")[1]);
-
-  const passwordInputs = screen.getAllByLabelText(/password/i);
-  await userEvent.type(passwordInputs[0], "Password1!");
-  await userEvent.type(passwordInputs[1], "Password1!");
-  await userEvent.click(screen.getByRole("button", { name: "Save" }));
-
-  await waitFor(() => {
-    expect(toast.success).toHaveBeenCalledWith("Password updated successfully! ✏️");;
-  });
-});
 });

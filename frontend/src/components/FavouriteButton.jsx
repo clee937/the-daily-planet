@@ -93,7 +93,7 @@ function FavouriteButton({ picture }) {
 return (
     <div className="favourite">
         <button
-            className="favourite-button"
+            className="hud-button"
             onClick={saved ? handleRemove : handleSave } //toggled between save and remove
             disabled={saving} // removed || so the buttin stays clickable when saved
             data-testid="favourite-button"
@@ -103,7 +103,7 @@ return (
 
         {error && (
             <div>
-                <p style= {{ colour: "red" }}>
+                <p style= {{ color: "red" }}>
                     {error} <Link to="/signup">Sign up</Link> or {" "}
                     <Link to="/login" state={{ from: location.pathname }}>Log in</Link>
                 </p>
