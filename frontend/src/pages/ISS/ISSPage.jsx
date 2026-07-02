@@ -71,11 +71,17 @@ export function ISSPage() {
                 <div className="hud-panel iss-tracker">
                     <div className="hud-panel-header">
                         <span>FEED 02 · ISS LIVE TRACKER</span>
-                        <span className="date">● LIVE</span>
+                        <span className="date">
+                            <span className="hud-dot"></span>
+                            LIVE
+                        </span>
                     </div>
 
                     <div className="hud-panel-body">
                         <div className="telemetry-panel">
+                            <div className="telemetry-row">
+                                <span>ISS LOCATION //</span>
+                            </div>
                             <div className="telemetry-row">
                                 <span>LATITUDE</span>
                                 <span className="value">{location.latitude}</span>
@@ -86,7 +92,7 @@ export function ISSPage() {
                             </div>
                             {userLocation ? (
                                 <div className="telemetry-row">
-                                    <span>DISTANCE FROM YOU</span>
+                                    <span>DISTANCE FROM YOU //</span>
                                     <span className="value signal">
                                         {calculateDistance(
                                             userLocation.latitude,

@@ -462,6 +462,21 @@ body {
     width: 280px;
     max-width: 100%;
 }
+.hud-button-tertiary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 14px 0;
+    align-self: center;
+    border-radius: var(--radius);
+    cursor: pointer;
+    width: 280px;
+    max-width: 100%;
+}
 .hud-button-secondary:hover {
     border-color: var(--cyan);
     color: var(--text);
