@@ -1,5 +1,5 @@
 import LogoutButton from "../components/LogoutButton";
-import logo from "../assets/the_daily_planet_logo.png";
+import logo from "../assets/new_logo.png";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 

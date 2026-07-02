@@ -1,8 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useOutletContext } from "react-router-dom";
 import { Chatbot } from "../../src/components/Chatbot";
+import { sendMessage } from "../../src/services/gemini";
+import { toast } from "react-toastify";
 
+const FAKE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U";
 const localStorageMock = (() => {
     let store = {};
     return {
@@ -12,13 +15,41 @@ const localStorageMock = (() => {
         clear: () => {store = {}; }
     };
 })();
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+vi.mock("react-toastify", () => ({
+    toast: { info: vi.fn() },
+}));
 
 vi.mock("../../src/services/gemini", () => ({
     sendMessage: vi.fn(),
 }));
 
-import { sendMessage } from "../../src/services/gemini";
+vi.mock("react-router-dom", async () => {
+    const actual = await vi.importActual("react-router-dom");
+    return {
+        ...actual,
+        useOutletContext: vi.fn(),
+    };
+});
+
+const mockFetch = vi.fn();
+globalThis.fetch = mockFetch;
+
+function mockStatusFetch(overrides = {}) {
+    mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({ messagesRemaining: 10, minutesUntilReset: 60, ...overrides }),
+    });
+}
+
+function makeToken(expOffsetSeconds) {
+    const payload = btoa(JSON.stringify({ 
+        sub: "123", 
+        exp: Math.floor(Date.now() / 1000) + expOffsetSeconds 
+    }));
+    return `header.${payload}.signature`;
+}
 
 const renderChatbot = () =>
     render(
@@ -29,8 +60,11 @@ const renderChatbot = () =>
 
 describe("Chatbot", () => {
     beforeEach(() => {
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock });
         vi.clearAllMocks();
         localStorage.clear();
+        useOutletContext.mockReturnValue({ isLoggedIn: false, setIsLoggedIn: vi.fn() });
+        mockStatusFetch();
     });
 
     it("renders the input and send button", () => {
@@ -52,7 +86,7 @@ describe("Chatbot", () => {
     });
 
     it("shows the user message after submitting", async () => {
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", FAKE_TOKEN);
         sendMessage.mockResolvedValue("A black hole is...");
         renderChatbot();
         const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
@@ -62,7 +96,7 @@ describe("Chatbot", () => {
     });
 
     it("shows Rover's reply after a successful response", async () => {
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", FAKE_TOKEN);
         sendMessage.mockResolvedValue({
             answer: "A black hole is a region of spacetime!",
             messagesRemaining: 9
@@ -77,7 +111,7 @@ describe("Chatbot", () => {
     });
 
     it("shows loading message while waiting for a response", async () => {
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", FAKE_TOKEN);
         // never resolves so loading stays true
         sendMessage.mockReturnValue(new Promise(() => {}));
         renderChatbot();
@@ -88,7 +122,7 @@ describe("Chatbot", () => {
     });
 
     it("clears the input after submitting", async () => {
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", FAKE_TOKEN);
         sendMessage.mockResolvedValue("Some answer");
         renderChatbot();
         const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
@@ -98,14 +132,14 @@ describe("Chatbot", () => {
     });
 
     it("does not submit if the prompt is empty", async () => {
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", FAKE_TOKEN);
         renderChatbot();
         fireEvent.submit(screen.getByRole("button", { name: /send/i }).closest("form"));
         expect(sendMessage).not.toHaveBeenCalled();
     });
 
     it("disables the send button while loading", async () => {
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", FAKE_TOKEN);
         sendMessage.mockReturnValue(new Promise(() => {}));
         renderChatbot();
         const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
@@ -118,10 +152,10 @@ describe("Chatbot", () => {
     });
 
     it("displays the limit reached message after 10 messages", async () => {
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", FAKE_TOKEN);
         sendMessage.mockResolvedValue("Some response"); // first 9 succeed
         sendMessage.mockRejectedValueOnce(
-            new Error("You've reached your message limit! Try again in 45 minute(s). Over and out.")
+            new Error("You've reached your hourly limit of 10 messages. Please try again in 60 minutes.")
         );
 
         renderChatbot();
@@ -135,8 +169,96 @@ describe("Chatbot", () => {
         await waitFor(() => {
             const content = screen.getByText
             expect(screen.getByText((content) => 
-            content.includes("You've reached your message limit!")
+            content.includes("You've reached your hourly limit")
             )).toBeTruthy();
         });
     });
+
+    it("shows messages remaining count when logged in", async () => {
+        localStorage.setItem("token", FAKE_TOKEN);
+        useOutletContext.mockReturnValue({ isLoggedIn: true, setIsLoggedIn: vi.fn() });
+        mockStatusFetch({ messagesRemaining: 7, minutesUntilReset: 15 });
+
+        renderChatbot();
+
+        await waitFor(() => {
+            expect(screen.getByText((content) =>
+                content.includes("7 of 10 messages remaining this hour.")
+            )).toBeTruthy();
+        });
+    });
+    
+    it("shows hourly limit warning with correct minutes when limit is reached", async () => {
+        localStorage.setItem("token", FAKE_TOKEN);
+        useOutletContext.mockReturnValue({ isLoggedIn: true, setIsLoggedIn: vi.fn() });
+        mockStatusFetch({ messagesRemaining: 0, minutesUntilReset: 1 });
+
+        renderChatbot();
+
+        await waitFor(() => {
+            expect(screen.getByText((content) =>
+                content.includes("Please try again in 1 minute.")
+            )).toBeTruthy();
+        });
+    });
+
+    describe("session expiry", () => {
+    let setIsLoggedInMock;
+
+    beforeEach(() => {
+        setIsLoggedInMock = vi.fn();
+        useOutletContext.mockReturnValue({ isLoggedIn: true, setIsLoggedIn: setIsLoggedInMock });
+    });
+
+        it("removes token and calls setIsLoggedIn(false) when chat-status returns 401", async () => {
+            localStorage.setItem("token", FAKE_TOKEN);
+            mockFetch.mockResolvedValueOnce({
+                ok: false,
+                status: 401,
+                json: async () => ({}),
+            });
+
+            renderChatbot();
+
+            await waitFor(() => {
+                expect(localStorage.getItem("token")).toBeNull();
+                expect(setIsLoggedInMock).toHaveBeenCalledWith(false);
+                expect(toast.info).toHaveBeenCalled();
+            });
+        });
+
+        it("logs error when token is invalid and cannot be parsed", async () => {
+            const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+            localStorage.setItem("token", "not.a.valid.token");
+            mockStatusFetch();
+
+            renderChatbot();
+
+            await waitFor(() => {
+                expect(consoleSpy).toHaveBeenCalledWith("Invalid token:", expect.any(Error));
+            });
+
+            consoleSpy.mockRestore();
+        });
+
+
+        it("removes token and logs out when sendMessage returns session expired error", async () => {
+            localStorage.setItem("token", FAKE_TOKEN);
+            mockStatusFetch();
+            sendMessage.mockRejectedValueOnce(new Error("You must be logged in to use this feature."));
+
+            renderChatbot();
+
+            const input = screen.getByPlaceholderText(/ask rover/i);
+            fireEvent.change(input, { target: { value: "What is Mars?" } });
+            fireEvent.submit(input.closest("form"));
+
+            await waitFor(() => {
+                expect(localStorage.getItem("token")).toBeNull();
+                expect(setIsLoggedInMock).toHaveBeenCalledWith(false);
+                expect(toast.info).toHaveBeenCalled();
+            });
+        });
+    });
 });
+

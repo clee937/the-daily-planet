@@ -571,6 +571,7 @@ body {
     color: var(--text-body);
     font-family: var(--font-mono);
     font-size: 14px;
+    padding: 12px 4px;
 }
 .chat-input input::placeholder { color: var(--text-label); }
 .chat-input button {
@@ -616,6 +617,15 @@ body {
     font-size: 13px;
     color: #A6B8C8;
     letter-spacing: 0.1em;
+}
+
+.app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.app-content {
+    flex: 1;
 }
 
 /* ---------- Auth Pages ---------- */
