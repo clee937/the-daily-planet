@@ -5,14 +5,16 @@ import { useState } from "react";
 function Layout() {
     const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") !== null);
     return (
-        <>
+        <div className="app-shell">
             <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-            <Outlet context={{ isLoggedIn, setIsLoggedIn }} />
+            <main className="app-content">
+                <Outlet context={{ isLoggedIn, setIsLoggedIn }} />
+            </main>
             <footer className="hud-footer">
                 <span>THE DAILY PLANET</span>
                 <span>BUILT BY TEAM // 2026: A CODING ODYSSEY</span>
             </footer>
-        </>
+        </div>
     );
 }
 
