@@ -118,7 +118,7 @@ export function ISSPage() {
                                     attribution="© OpenStreetMap contributors"
                                 />
                                 <Marker position={[location.latitude, location.longitude]}>
-                                    <Popup>The ISS is here! 🛸</Popup>
+                                    <Popup>The ISS is here! 🛰️</Popup>
                                 </Marker>
                                 {userLocation && (
                                     <Marker position={[userLocation.latitude, userLocation.longitude]}>
