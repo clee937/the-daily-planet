@@ -33,7 +33,7 @@ describe("Home Page", () => {
       </BrowserRouter>
     );
 
-      expect(screen.getByPlaceholderText("Ask Rover about space...")).toBeTruthy();
+      expect(screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...")).toBeTruthy();
       expect(screen.getByRole("button", { name: /send/i })).toBeTruthy();
   });
 });
