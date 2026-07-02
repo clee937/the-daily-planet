@@ -30,7 +30,7 @@ export default function AstronomyPage() {
                 setLocationError(null);
             },
             (error) => {
-                setLocationError(error.message);
+                setLocationError("Location permission is required to view visible objects and moon phases.");
             }
         );
     };
@@ -52,7 +52,7 @@ export default function AstronomyPage() {
 
     const getVisibleObjects = async (lat, lon) => {
         if (lat === null || lon === null) {
-            alert("Location required");
+            alert("Please enable location services to use this feature.");
             return;
         }
         const response = await fetch(`${BACKEND_URL}/api/astronomy/visible-objects?lat=${lat}&lon=${lon}&date=${visibleObjectsDate}`);
@@ -66,7 +66,7 @@ export default function AstronomyPage() {
 
     const getMoonPhase = async () => {
         if (lat === null || lon === null) {
-            alert("Location is required.");
+            alert("Please enable location services to use this feature.");
             return;
         }
         try {
@@ -122,7 +122,7 @@ export default function AstronomyPage() {
             <header className="astronomy-header">
                 <h1 className="astronomy-title">🌍 Visible Objects Near You</h1>
                 <p className="astronomy-intro">Use your current location to explore visible objects near you.</p>
-                <button className="hud-button-secondary" onClick={getCurrentLocation}>⟳ Refresh Location</button>
+                <button className="hud-button-tertiary" onClick={getCurrentLocation}>⟳ Refresh Location</button>
                 {lat !== null && lon !== null && (
                     <p className="astronomy-location">📍 Current location: [Lat: {lat.toFixed(2)}, Lon: {lon.toFixed(2)}]</p>
                 )}
@@ -141,7 +141,11 @@ export default function AstronomyPage() {
                         <p className="astronomy-note">🔭 Visible objects calculated for 22:00 local time.</p>
                         <div className="astronomy-control">
                             <label htmlFor="visible-date">Select a date:</label>
-                            <input id="visible-date" type="date" className="astronomy-input" value={visibleObjectsDate} onChange={(event) => setVisibleObjectsDate(event.target.value)} />
+                            <input id="visible-date" type="date" className="astronomy-input" value={visibleObjectsDate} onChange={(event) => {
+                                if (lat === null || lon === null) {
+                                    alert("Please enable location services to use this feature.");
+                                    return;
+                                } setVisibleObjectsDate(event.target.value)}} />
                         </div>
                         {visibleObjects.length > 0 && (
                             <ul className="astronomy-grid">

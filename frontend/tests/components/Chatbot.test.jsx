@@ -35,13 +35,13 @@ describe("Chatbot", () => {
 
     it("renders the input and send button", () => {
         renderChatbot();
-        expect(screen.getByPlaceholderText("Ask Rover about space...")).toBeTruthy();
+        expect(screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...")).toBeTruthy();
         expect(screen.getByRole("button", { name: /send/i })).toBeTruthy();
     });
 
     it("shows no auth error if no token", async () => {
         renderChatbot();
-        const input = screen.getByPlaceholderText("Ask Rover about space...");
+        const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
         fireEvent.change(input, { target: { value: "What is a black hole?" } });
         fireEvent.submit(screen.getByRole("button", { name: /send/i }).closest("form"));
         await waitFor(() => {
@@ -55,7 +55,7 @@ describe("Chatbot", () => {
         localStorage.setItem("token", "fake-token");
         sendMessage.mockResolvedValue("A black hole is...");
         renderChatbot();
-        const input = screen.getByPlaceholderText("Ask Rover about space...");
+        const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
         fireEvent.change(input, { target: { value: "What is a black hole?" } });
         fireEvent.submit(input.closest("form"));
         expect(screen.getByText("What is a black hole?")).toBeTruthy();
@@ -68,7 +68,7 @@ describe("Chatbot", () => {
             messagesRemaining: 9
         });
         renderChatbot();
-        const input = screen.getByPlaceholderText("Ask Rover about space...");
+        const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
         fireEvent.change(input, { target: { value: "What is a black hole?" } });
         fireEvent.submit(input.closest("form"));
         await waitFor(() => {
@@ -81,7 +81,7 @@ describe("Chatbot", () => {
         // never resolves so loading stays true
         sendMessage.mockReturnValue(new Promise(() => {}));
         renderChatbot();
-        const input = screen.getByPlaceholderText("Ask Rover about space...");
+        const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
         fireEvent.change(input, { target: { value: "What is Mars?" } });
         fireEvent.submit(input.closest("form"));
         expect(screen.getByText("Rover is thinking... 🚀")).toBeTruthy();
@@ -91,7 +91,7 @@ describe("Chatbot", () => {
         localStorage.setItem("token", "fake-token");
         sendMessage.mockResolvedValue("Some answer");
         renderChatbot();
-        const input = screen.getByPlaceholderText("Ask Rover about space...");
+        const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
         fireEvent.change(input, { target: { value: "What is Mars?" } });
         fireEvent.submit(input.closest("form"));
         expect(input.value).toBe("");
@@ -108,7 +108,7 @@ describe("Chatbot", () => {
         localStorage.setItem("token", "fake-token");
         sendMessage.mockReturnValue(new Promise(() => {}));
         renderChatbot();
-        const input = screen.getByPlaceholderText("Ask Rover about space...");
+        const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
         fireEvent.change(input, { target: { value: "What is Mars?" } });
         fireEvent.submit(input.closest("form"));
         await waitFor(() => {
@@ -125,7 +125,7 @@ describe("Chatbot", () => {
         );
 
         renderChatbot();
-        const input = screen.getByPlaceholderText("Ask Rover about space...");
+        const input = screen.getByPlaceholderText("Ask Rover, Mission Control's AI space pup...");
 
         for (let i = 0; i < 10; i++) {
             fireEvent.change(input, { target: { value: "What is Mars?" } });

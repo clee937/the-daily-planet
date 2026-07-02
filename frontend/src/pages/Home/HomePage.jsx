@@ -13,6 +13,7 @@ export function HomePage() {
         <PictureOfTheDay token={token} />
         <div className="hud-sidebar">
           <Chatbot />
+          <p className="astronomy-note">🛸 Rover's knowledge has a cutoff date and may not reflect current space news. Always verify with NASA for the latest information.</p>
         </div>
       </div>
     </div>
