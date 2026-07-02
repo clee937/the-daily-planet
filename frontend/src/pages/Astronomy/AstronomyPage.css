@@ -70,6 +70,12 @@
     width: 280px;
     max-width: 100%;
 }
+
+.astronomy-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
 .astronomy-input:focus-visible {
     outline: 2px solid var(--cyan, #7FE8FF);
     outline-offset: 1px;
