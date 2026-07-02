@@ -12,7 +12,7 @@ function Layout() {
             </main>
             <footer className="hud-footer">
                 <span>THE DAILY PLANET</span>
-                <span>// BUILT BY TEAM 2026; A Coding Odyssey </span>
+                <span>BUILT BY TEAM // 2026: A CODING ODYSSEY</span>
             </footer>
         </div>
     );

@@ -2,6 +2,20 @@ const request = require("supertest");
 const app = require("../../app");
 
 describe("GET /iss", () => {
+    beforeEach (() => {
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            text: async () => JSON.stringify({
+                message: "success",
+                iss_position: { latitude: "51.5074", longitude: "-0.1278" },
+                timestamp: 123456789
+            })
+    });
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     test("returns a 200 status", async () => {
         const response = await request(app).get("/iss");
         expect(response.status).toBe(200);
@@ -36,6 +50,7 @@ describe("GET /iss", () => {
 
     test("returns fallback data when ISS API is unavailable", async () => {
         // Mock fetch to simulate API being down
+        jest.restoreAllMocks();
         jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error("API down"));
         
         const response = await request(app).get("/iss");

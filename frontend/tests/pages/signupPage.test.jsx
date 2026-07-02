@@ -2,17 +2,23 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, MemoryRouter } from "react-router-dom";
 import { signup } from "../../src/services/authentication";
 import { toast } from "react-toastify";
 
 import { SignupPage } from "../../src/pages/Signup/SignupPage";
 
 // Mocking React Router's useNavigate function
-vi.mock("react-router-dom", () => {
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
   const navigateMock = vi.fn();
-  const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
-  return { useNavigate: useNavigateMock };
+  const useNavigateMock = () => navigateMock;
+  const useLocationMock = () => ({ state: null, pathname: "/" });
+  return { 
+    ...actual,
+    useNavigate: useNavigateMock,
+    useLocation: useLocationMock,
+  };
 });
 
 // Mocking the signup service
@@ -55,7 +61,7 @@ describe("Signup Page", () => {
   });
 
   test("allows a user to signup", async () => {
-    render(<SignupPage />);
+    render(<MemoryRouter><SignupPage /></MemoryRouter>);
 
     await completeSignupForm();
 
@@ -64,14 +70,14 @@ describe("Signup Page", () => {
 
   test("navigates to /login on successful signup", async () => {
     signup.mockResolvedValue("secrettoken123");
-    render(<SignupPage />);
+    render(<MemoryRouter><SignupPage /></MemoryRouter>);
     const navigateMock = useNavigate();
     await completeSignupForm();
-    expect(navigateMock).toHaveBeenCalledWith("/login");
+    expect(navigateMock).toHaveBeenCalledWith("/login", { state: { from: "/" } });
   });
 
   test("navigates to /signup on unsuccessful signup", async () => {
-    render(<SignupPage />);
+    render(<MemoryRouter><SignupPage /></MemoryRouter>);
 
     signup.mockRejectedValue(new Error("Error signing up"));
     const navigateMock = useNavigate();
@@ -83,7 +89,7 @@ describe("Signup Page", () => {
   });
 
   test("shows an error if password does not contain a special character", async () => {
-    render(<SignupPage />);
+    render(<MemoryRouter><SignupPage /></MemoryRouter>);
 
     const user = userEvent.setup();
     const emailInputEl = screen.getByLabelText("Email:");
@@ -100,7 +106,7 @@ describe("Signup Page", () => {
   });
 
   test("shows error when fields are empty", async () => {
-  render(<SignupPage />);
+  render(<MemoryRouter><SignupPage /></MemoryRouter>);
 
   const user = userEvent.setup();
   const submitButtonEl = screen.getByRole("submit-button");
@@ -111,7 +117,7 @@ describe("Signup Page", () => {
 });
 
 test("shows error when email is invalid", async () => {
-  render(<SignupPage />);
+  render(<MemoryRouter><SignupPage /></MemoryRouter>);
 
   const user = userEvent.setup();
   const emailInputEl = screen.getByLabelText("Email:");
@@ -129,7 +135,7 @@ test("shows error when email is invalid", async () => {
 });
 
 test("shows error when password is too short", async () => {
-  render(<SignupPage />);
+  render(<MemoryRouter><SignupPage /></MemoryRouter>);
 
   const user = userEvent.setup();
   const emailInputEl = screen.getByLabelText("Email:");
@@ -147,7 +153,7 @@ test("shows error when password is too short", async () => {
 });
 
 test("shows error when email format is invalid", async () => {
-  render(<SignupPage />);
+  render(<MemoryRouter><SignupPage /></MemoryRouter>);
 
   const user = userEvent.setup();
   const emailInputEl = screen.getByLabelText("Email:");
@@ -166,7 +172,7 @@ test("shows error when email format is invalid", async () => {
 
 test("shows a success toast on signup", async () => {
   signup.mockResolvedValue("secrettoken123");
-  render(<SignupPage />);
+  render(<MemoryRouter><SignupPage /></MemoryRouter>);
   await completeSignupForm();
   expect(toast.success).toHaveBeenCalled();
 });

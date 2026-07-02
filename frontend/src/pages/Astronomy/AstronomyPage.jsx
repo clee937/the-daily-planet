@@ -52,7 +52,7 @@ export default function AstronomyPage() {
 
     const getVisibleObjects = async (lat, lon) => {
         if (lat === null || lon === null) {
-            alert("Location required");
+            alert("Location is required.");
             return;
         }
         const response = await fetch(`${BACKEND_URL}/api/astronomy/visible-objects?lat=${lat}&lon=${lon}&date=${visibleObjectsDate}`);

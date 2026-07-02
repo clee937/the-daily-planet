@@ -85,6 +85,11 @@ body {
     vertical-align: middle;
 }
 
+.hud-dot.offline {
+    background-color: #FF8A8A;
+    box-shadow: 0 0 8px #FF8A8A;
+}
+
 /* ---------- Nav ---------- */
 .hud-nav {
     display: flex;
@@ -230,7 +235,7 @@ body {
     padding: 24px 18px;
 }
 .favourites-page h2 {
-    font-family: var(--font-serif);
+    font-family: var(--font-mono);
     font-size: 26px;
     color: var(--text);
     margin: 0 0 20px;
@@ -359,7 +364,7 @@ body {
     padding: 24px 18px;
 }
 .profile-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-mono);
     font-size: 26px;
     color: var(--text);
     text-align: center;
@@ -454,6 +459,8 @@ body {
     padding: 9px 18px;
     border-radius: var(--radius);
     cursor: pointer;
+    width: 280px;
+    max-width: 100%;
 }
 .hud-button-secondary:hover {
     border-color: var(--cyan);
@@ -676,6 +683,23 @@ body {
 .iss-page {
     padding: 18px;
 }
+
+.iss-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.iss-title {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    color: var(--text, #FFFFFF);
+    margin: 0 0 10px;
+}
+.iss-intro {
+    color: var(--text-body, #D5E0EA);
+    margin: 0 0 14px;
+}
+
 .iss-status {
     text-align: center;
     color: var(--text-body);
@@ -724,7 +748,7 @@ body {
     margin-bottom: 24px;
 }
 .astronomy-title {
-    font-family: Georgia, serif;
+    font-family: var(--font-mono);
     font-size: 28px;
     color: var(--text, #FFFFFF);
     margin: 0 0 10px;

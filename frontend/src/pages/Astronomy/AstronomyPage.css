@@ -8,7 +8,7 @@
     margin-bottom: 24px;
 }
 .astronomy-title {
-    font-family: Georgia, serif;
+    font-family: var(--font-mono);
     font-size: 28px;
     color: var(--text, #FFFFFF);
     margin: 0 0 10px;
@@ -38,6 +38,7 @@
     font-style: italic;
     color: var(--text-body, #D5E0EA);
 }
+
 .astronomy-note {
     font-size: 13px;
     color: var(--text-label, #D5E0EA);
@@ -49,10 +50,14 @@
 }
 .astronomy-control {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
-    margin: 14px 0;
+    gap: 12px;
+    margin: 18px 0;
+}
+.astronomy-control label {
+    color: var(--text-label);
+    text-align: center;
 }
 .astronomy-input {
     background: var(--bg, #060B11);
@@ -62,6 +67,8 @@
     font-family: var(--font-mono, monospace);
     font-size: 14px;
     padding: 9px 12px;
+    width: 280px;
+    max-width: 100%;
 }
 
 .astronomy-input::-webkit-calendar-picker-indicator {
@@ -76,7 +83,8 @@
 
 /* Buttons in astronomy controls — size to content, no wrap */
 .astronomy-control .hud-button {
-    width: auto;
+    width: 280px;
+    max-width: 100%;
     white-space: nowrap;
     padding: 12px 20px;
 }
