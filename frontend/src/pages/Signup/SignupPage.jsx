@@ -38,8 +38,7 @@ export function SignupPage() {
     }
 
     try {
-      const token = await signup(email, password, username);
-      localStorage.setItem("token", token)
+      await signup(email, password, username);
       toast.success(
         <>
         Sign up successful!
