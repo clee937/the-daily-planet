@@ -1,4 +1,4 @@
-<!-- # The Daily Planet 🚀
+# The Daily Planet 🚀
 
 A space-themed MERN application built on NASA's open APIs. Browse the Astronomy
 Picture of the Day, speak to an AI chatbot for space-related questions, track the ISS, astroids and objects in the sky near you.
@@ -199,7 +199,7 @@ Toby Edwards Rean - dev
 ## Acknowledgements
 
 - NASA Open APIs — https://api.nasa.gov
-- Imagery courtesy of NASA/JPL-Caltech -->
+- Imagery courtesy of NASA/JPL-Caltech
 
 -Open Notify ISS location - http://api.open-notify.org/iss-now.json (free, no key needed)
 -Open Notify astronauts - http://api.open-notify.org/astros.json (free, no key needed)
@@ -210,3 +210,7 @@ Toby Edwards Rean - dev
 - Asteriod tracker
   -AstronomyAPI - sign up required: https://astronomyapi.com/auth/sign-in
 - AstronomyAPI key- saved in api/.env as: "ASTRONOMY_ID" and "ASTRONOMY_SECRET"
+
+
+## Original
+- https://github.com/Humaira-Hossain/the-daily-planet 
