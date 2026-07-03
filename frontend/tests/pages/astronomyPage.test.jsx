@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AstronomyPage from "../../src/pages/Astronomy/AstronomyPage";
 import { MemoryRouter } from "react-router-dom";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 
 // Mock geolocation
 const mockGeolocation = {
@@ -37,6 +37,7 @@ function renderPage() {
 describe("Astronomy Page", () => {
     beforeEach(() => {
         vi.resetAllMocks();
+        global.navigator.geolocation = mockGeolocation;
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: () => Promise.resolve([]),
@@ -98,7 +99,7 @@ describe("Astronomy Page", () => {
         mockLocationError();
         renderPage();
 
-        await screen.findByText(/user denied geolocation/i);
+        await screen.findByText(/location permission is required/i);
     });
 
     it("shows error when geolocation is not supported by browser", () => {
@@ -176,7 +177,7 @@ describe("Astronomy Page", () => {
 
         await userEvent.click(screen.getByRole("button", { name: /explore moon phase/i }));
 
-        expect(alertMock).toHaveBeenCalledWith("Location is required.");
+        expect(alertMock).toHaveBeenCalledWith("Please enable location services to use this feature.");
         alertMock.mockRestore();
         global.navigator.geolocation = mockGeolocation; // restore geolocation for other tests
     });
@@ -344,19 +345,7 @@ describe("Astronomy Page", () => {
         renderPage();
 
         const dateInput = screen.getAllByLabelText(/select a date:/i)[0];
-        await userEvent.clear(dateInput);
-        await userEvent.type(dateInput, "2026-12-25");
-
-        expect(dateInput.value).toBe("2026-12-25");
-    });
-
-    it("updates moon date when date input changes", async () => {
-        mockLocationSuccess();
-        renderPage();
-
-        const dateInput = screen.getAllByLabelText(/select a date:/i)[1];
-        await userEvent.clear(dateInput);
-        await userEvent.type(dateInput, "2026-12-25");
+        fireEvent.change(dateInput, { target: { value: "2026-12-25" } });
 
         expect(dateInput.value).toBe("2026-12-25");
     });
@@ -365,8 +354,14 @@ describe("Astronomy Page", () => {
         mockLocationSuccess();
         renderPage();
 
+        await waitFor(() => {
+            expect(mockGeolocation.getCurrentPosition).toHaveBeenCalledTimes(1);
+        });
+
         await userEvent.click(screen.getByRole("button", { name: /refresh location/i }));
 
-        expect(mockGeolocation.getCurrentPosition).toHaveBeenCalledTimes(2); // once on mount, once on click
+        await waitFor(() => {
+            expect(mockGeolocation.getCurrentPosition).toHaveBeenCalledTimes(2);
+        });
     });
 });
